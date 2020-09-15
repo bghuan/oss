@@ -1,55 +1,64 @@
-# Multipart upload {#concept_84786_zh .concept}
+# Multipart upload
 
-This topic describes how to use multipart upload.
+By using the multipart upload feature provided by OSS, you can split a large object into multiple parts and upload them separately. After all parts are uploaded, call the CompleteMultipartUpload operation to combine these parts into a single object to implement resumable upload.
 
-For the complete code of multipart upload, see [GitHub](https://github.com/aliyun/aliyun-oss-java-sdk/blob/master/src/samples/MultipartUploadSample.java).
+## Multipart upload process
 
-To enable multipart upload, perform the following steps:
+To implement multipart upload, perform the following operations:
 
-1.  Initiate a multipart upload event.
+1.  Initiate a multipart upload task.
 
-    You can call ossClient.initiateMultipartUpload to return the globally unique uploadId created in OSS.
+    Call the ossClient.initiateMultipartUpload method to obtain an upload ID that is unique in OSS.
 
-2.  Upload parts.
+2.  Upload the parts.
 
-    You can call ossClient.uploadPart to upload part data.
+    Call the ossClient.uploadPart method to upload the parts.
 
-    **Note:** 
+    **Note:**
 
-    -   For parts with a same uploadId, parts are sequenced by their part numbers. If you have uploaded a part and use the same part number to upload another part, the later part will replace the former part.
-    -   OSS places the MD5 value of part data in ETag and returns the MD5 value to the user.
-    -   SDK automatically configures Content-MD5. OSS calculates the MD5 value of uploaded data and compares it with the MD5 value calculated by SDK. If the two values vary, the error code of InvalidDigest is returned.
-3.  Complete multipart upload.
+    -   Part numbers identify the relative positions of parts in an object that share the same upload ID. If you have uploaded a part and used its part number again to upload another part, the latter part overwrites the former part.
+    -   OSS includes the MD5 hash of part data in the ETag header and returns the MD5 hash to the user.
+    -   OSS calculates the MD5 hash of uploaded data and compares it with the MD5 hash calculated by the SDK. If the two hashes are different, the InvalidDigest error code is returned.
+3.  Complete the multipart upload task.
 
-    After you have uploaded all parts, call partossClient.completeMultipartUpload to combine these parts into a complete object.
+    After all parts are uploaded, call the ossClient.completeMultipartUpload method to combine the parts into a complete object.
 
 
-The following code is used as a complete example that describes the process of multipart upload:
+For more information about multipart upload and its applicable scenarios, see [Multipart upload](/intl.en-US/Developer Guide/Objects/Upload files/Multipart upload and resumable upload.md). For the complete code used to perform multipart upload, visit [GitHub](https://github.com/aliyun/aliyun-oss-java-sdk/blob/master/src/samples/MultipartUploadSample.java).
 
-``` {#codeblock_bwn_2po_zcv .language-java}
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+## Complete sample code of multipart upload
+
+The following code provides a complete example that describes the process of multipart upload:
+
+```
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 String accessKeyId = "<yourAccessKeyId>";
 String accessKeySecret = "<yourAccessKeySecret>";
 String bucketName = "<yourBucketName>";
+// <yourObjectName> indicates the complete path of the object you want to upload to OSS, and must include the file extension of the object. Example: abc/efg/123.jpg.
 String objectName = "<yourObjectName>";
 
 // Create an OSSClient instance.
 OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
-/* Step 1: Initiate a multipart upload event.
-*/
-InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest(bucketName, objectName);
-InitiateMultipartUploadResult result = ossClient.initiateMultipartUpload(request);
-// An uploadId is returned. It is the unique identifier for a part upload event. You can initiate related operations (such as part upload cancelation and query) based on the uploadId.
-String uploadId = result.getUploadId();
+// Create an InitiateMultipartUploadRequest request.
+InitiateMultipartUploadRequest request = new InitiateMultipartUploadRequest("<yourBucketName>", "<yourObjectName>");
 
-/* Step 2: Upload parts.
-*/
+// Optional. Specify the storage class.
+// ObjectMetadata metadata = new ObjectMetadata();
+// metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
+// request.setObjectMetadata(metadata);
+
+// Initiate a multipart upload task.
+InitiateMultipartUploadResult upresult = ossClient.initiateMultipartUpload(request);
+// Obtain an upload ID. The upload ID uniquely identifies the multipart upload task. You can use the upload ID to initiate related requests such as canceling and querying a multipart upload task.
+String uploadId = upresult.getUploadId();
+
 // partETags is a set of PartETags. A PartETag consists of an ETag and a part number.
 List<PartETag> partETags =  new ArrayList<PartETag>();
-// Calculate the total number of parts.
+// Calculate the total number of parts to upload.
 final long partSize = 1 * 1024 * 1024L;   // 1MB
 final File sampleFile = new File("<localFile>");
 long fileLength = sampleFile.length();
@@ -57,124 +66,120 @@ int partCount = (int) (fileLength / partSize);
 if (fileLength % partSize ! = 0) {
     partCount++;
  }
-// Upload each part simultaneously until all parts are uploaded.
+// Upload each part sequentially until all parts are uploaded.
 for (int i = 0; i < partCount; i++) {
     long startPos = i * partSize;
     long curPartSize = (i + 1 == partCount) ? (fileLength - startPos) : partSize;
     InputStream instream = new FileInputStream(sampleFile);
-    // Skip parts that have been uploaded.
+    // Skip the uploaded parts.
     instream.skip(startPos);
     UploadPartRequest uploadPartRequest = new UploadPartRequest();
     uploadPartRequest.setBucketName(bucketName);
     uploadPartRequest.setKey(objectName);
     uploadPartRequest.setUploadId(uploadId);
     uploadPartRequest.setInputStream(instream);
-    // Configure the size available for each part. Aside from the last part, all parts are sized 100 KB at least.
+    // Configure the size of each part. Each part except for the last part must be larger than 100 KB in size.
     uploadPartRequest.setPartSize(curPartSize);
-    // Configure part numbers. Each part is configured with a part number. The value can be from 1 to 10,000. If you configure a number beyond the range, OSS returns an InvalidArgument error code.
+    // Configure part numbers. Each part is configured with a part number. The number ranges from 1 to 10000. If you configure a number beyond the range, OSS returns an InvalidArgument error code.
     uploadPartRequest.setPartNumber( i + 1);
-    // Do not upload each part sequentially. They can be uploaded from different OSSClients. Then they are sequenced and combined into a complete object based on part numbers.
+    // Parts are not necessarily uploaded in order. They may be uploaded from different OSS clients. OSS sorts the parts based on their part numbers and combines them to obtain a complete object.
     UploadPartResult uploadPartResult = ossClient.uploadPart(uploadPartRequest);
-    // After you upload a part, OSS returns a result that contains a PartETag. The PartETag is stored in partETags.
+    // When a part is uploaded, OSS returns a result that contains a PartETag. The PartETag is stored in partETags.
     partETags.add(uploadPartResult.getPartETag());
 }
 
-/* Step 3: Complete multipart upload.
-*/
-// Sequence parts. partETags must be sequenced by part numbers in ascending order.
-Collections.sort(partETags, new Comparator<PartETag>() {
-    public int compare(PartETag p1, PartETag p2) {
-        return p1.getPartNumber() - p2.getPartNumber();
-    }
-});
-// You must provide all valid PartETags when you perform this operation. OSS verifies the validity of all parts one by one after it receives PartETags. After part verification is successful, OSS combines these parts into a complete object.
+
+// Create a CompleteMultipartUploadRequest request.
+// When the multipart upload task is complete, you must provide all valid partETags. After OSS receives the partETags, OSS verifies the validity of all parts one by one. After all parts are validated, OSS combines these parts into a complete object.
 CompleteMultipartUploadRequest completeMultipartUploadRequest =
         new CompleteMultipartUploadRequest(bucketName, objectName, uploadId, partETags);
-ossClient.completeMultipartUpload(completeMultipartUploadRequest);
 
-// Close your OSSClient.
+// Optional. Set the ACL.
+// completeMultipartUploadRequest.setObjectACL(CannedAccessControlList.PublicRead);
+
+// Complete multipart upload.
+CompleteMultipartUploadResult completeMultipartUploadResult = ossClient.completeMultipartUpload(completeMultipartUploadRequest);
+
+// Shut down the OSSClient instance.
 ossClient.shutdown();
-		
 ```
 
-## Cancel a multipart upload event {#section_rly_5pb_kfb .section}
+## Cancel a multipart upload task
 
-You can call ossClient.abortMultipartUpload to cancel a multipart upload event. If you cancel a multipart upload event, you are not allowed to perform any other operations with this uploadId anymore. The uploaded parts will be deleted.
+You can call the ossClient.abortMultipartUpload method to cancel a multipart upload task. If a multipart upload task is canceled, the upload ID can no longer be used to upload any part. The uploaded parts are deleted.
 
-Run the following code to cancel a multipart upload event:
+The following code provides an example on how to cancel a multipart upload task:
 
-``` {#codeblock_uua_13j_dbi .language-java}
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+```
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 String accessKeyId = "<yourAccessKeyId>";
 String accessKeySecret = "<yourAccessKeySecret>";
 
 // Create an OSSClient instance.
 OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
-// Cancel multipart upload. The uploadId is from InitiateMultipartUpload.
+// Cancel the multipart upload task. The upload ID is returned by InitiateMultipartUpload.
 AbortMultipartUploadRequest abortMultipartUploadRequest =
         new AbortMultipartUploadRequest("<yourBucketName>", "<yourObjectName>", "<uploadId>");
 ossClient.abortMultipartUpload(abortMultipartUploadRequest);
 
-// Close your OSSClient.
-ossClient.shutdown();
-			
+// Shut down the OSSClient instance.
+ossClient.shutdown();            
 ```
 
-## List uploaded parts {#section_wlh_4ww_xhq .section}
+## List uploaded parts
 
-Call ossClient.listParts to list all uploaded parts with a specified uploadId.
+You can call the ossClient.listParts method to list all parts that are uploaded using the specified upload ID.
 
 -   Simple list
 
-    Run the following code for simple list:
+    The following code provides an example for simple list:
 
-    ``` {#codeblock_zr6_w8d_vri .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     
     // Create an OSSClient instance.
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     
-    // List uploaded parts. The uploadId is returned from InitiateMultipartUpload.
+    // List uploaded parts. The upload ID is returned by InitiateMultipartUpload.
     ListPartsRequest listPartsRequest = new ListPartsRequest("<yourBucketName>", "<yourObjectName>", "<uploadId>");
-     // Configure uploadId.
+     // Configure an upload ID.
      //listPartsRequest.setUploadId(uploadId);
-     // Set the maximum number of parts that can be displayed on each page to 100. The default number is 1,000.
+     // Set the maximum number of parts to list on each page to 100. By default, 1,000 parts are listed.
      listPartsRequest.setMaxParts(100);
-     // Specify the initial position in the list. Only the parts with part numbers greater than this parameter value are listed.
+     // Specify the start point of the list. Only the parts whose part numbers are greater than the value of this parameter are listed.
      listPartsRequest.setPartNumberMarker(2);
     PartListing partListing = ossClient.listParts(listPartsRequest);
     
     for (PartSummary part : partListing.getParts()) {
-        // Obtain part numbers.
+        // Query part numbers.
         part.getPartNumber();
-        // Obtain the size of part data.
+        // Query the part size.
         part.getSize();
-        // Obtain ETag.
+        // Query the ETag.
         part.getETag();
-        // Obtain the latest time parts are modified.
+        // Query the last modification time.
         part.getLastModified();
     }
     
-    // Close your OSSClient.
-    ossClient.shutdown();
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                    
     ```
 
 -   List all uploaded parts
 
-    By default, listParts can only list a maximum of 1,000 parts at a time. To list more than 1,000 uploaded parts, run the following code:
+    By default, listParts can list up to 1,000 parts at a time. The following code provides an example on how to list more than 1,000 parts:
 
-    ``` {#codeblock_dtn_opg_277 .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     
@@ -189,55 +194,54 @@ Call ossClient.listParts to list all uploaded parts with a specified uploadId.
         partListing = ossClient.listParts(listPartsRequest);
     
         for (PartSummary part : partListing.getParts()) {
-            // Obtain part numbers.
+            // Query part numbers.
             part.getPartNumber();
-            // Obtain the part size.
+            // Query the part size.
             part.getSize();
-            // Obtain ETag.
+            // Query the ETag.
             part.getETag();
-            // Obtain the latest time parts are modified.
+            // Query the last modification time.
             part.getLastModified();
         }
-    // Specify the initial position for the list. Only the parts with part numbers greater than the initial value are listed.
+    // Specify the start point of the list. Only the parts whose part numbers are greater than the value of this parameter are listed.
     listPartsRequest.setPartNumberMarker(partListing.getNextPartNumberMarker());
     } while (partListing.isTruncated());
     
-    // Close your OSSClient.
-    ossClient.shutdown()
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                    
     ```
 
--   List all uploaded parts on one or more pages
+-   List all uploaded parts by page
 
-    Run the following code to specify the maximum number of parts displayed on each page:
+    The following code provides an example on how to specify the maximum number of parts to list per page and list all uploaded parts by page:
 
-    ``` {#codeblock_7s1_jvf_i0c .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     
     // Create an OSSClient instance.
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     
-    // List all uploaded parts on one or more pages.
+    // List all uploaded parts by page.
     PartListing partListing;
     ListPartsRequest listPartsRequest = new ListPartsRequest("<yourBucketName>", "<yourObjectName>", "<uploadId>");
-    // Set the maximum number of parts displayed on each page to 100.
+    // Set the maximum number of parts to list per page to 100.
     listPartsRequest.setMaxParts(100);
     
     do {
         partListing = ossClient.listParts(listPartsRequest);
     
         for (PartSummary part : partListing.getParts()) {
-            // Obtain part numbers.
+            // Query part numbers.
             part.getPartNumber();
-            // Obtain the part size.
+            // Query the part size.
             part.getSize();
-            // Gets the etag of the slice.
-            // Obtain ETag.
-            // Obtain the latest time parts are modified.
+            // Query the ETag.
+            part.getETag();
+            // Query the last modification time.
             part.getLastModified();
         }
     
@@ -245,35 +249,34 @@ Call ossClient.listParts to list all uploaded parts with a specified uploadId.
     
     } while (partListing.isTruncated());
     
-    // Close your OSSClient.
-    ossClient.shutdown();
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                    
     ```
 
 
-## List all part upload events for a bucket {#section_qqg_ehz_5wl .section}
+## List multipart upload tasks
 
-Call ossClient.listMultipartUploads to list all ongoing part upload events \(events that have been initiated but not completed or have been canceled\). You can configure the following parameters:
+You can call the ossClient.listMultipartUploads method to list all ongoing multipart upload tasks. Ongoing multipart upload tasks are tasks that are initiated but not completed or tasks that are canceled. The following table describes the parameters of this operation.
 
 |Parameter|Description|Configuration method|
-|---------|-----------|--------------------|
-|prefix|Specifies the prefix that must be included in the returned object name. Note that if you use a prefix for query, the returned object name will contain the prefix.|ListMultipartUploadsRequest.setPrefix\(String prefix\)|
-|delimiter|Specifies a delimiter of a forward slash \(/\) used to group object names. The object between the specified prefix and the first occurrence of a delimiter of a forward slash \(/\) is commonPrefixes.|ListMultipartUploadsRequest.setDelimiter\(String delimiter\)|
-|maxUploads|Specifies the maximum number of part upload events. The maximum value \(also default value\) you can set is 1,000.|ListMultipartUploadsRequest.setMaxUploads\(Integer maxUploads\)|
-|keyMarker|Lists all part upload events with the object whose names start with a letter that comes after the keyMarker value in the alphabetical order. You can use this parameter with the uploadIdMarker parameter to specify the initial position for the specified returned result.|ListMultipartUploadsRequest.setKeyMarker\(String keyMarker\)|
-|uploadIdMarker|You can use this parameter with the keyMarker parameter to specify the initial position for the specified returned result. If you do not configure keyMarker, the uploadIdMarker parameter is invalid. If you configure keyMarker, the query result contains: -   All objects whose names start with a letter that comes after the keyMarker value.
--   All objects whose names start with a letter that is the same as the keyMarker value in the alphabetical order and the value of uploadId greater than that of uploadIdMarker.
+|:--------|:----------|:-------------------|
+|prefix|Specifies the prefix that returned object names must contain. Note that if you use a prefix for a query, the returned object name contains the prefix.|ListMultipartUploadsRequest.setPrefix\(String prefix\)|
+|delimiter|Groups objects by name. Objects whose names contain the same string from the prefix and the next occurrence of the delimiter are grouped as a single result element in CommonPrefixes.|ListMultipartUploadsRequest.setDelimiter\(String delimiter\)|
+|maxUploads|Specifies the maximum number of multipart upload tasks to return each time. The default value is 1000. The maximum value is 1000.|ListMultipartUploadsRequest.setMaxUploads\(Integer maxUploads\)|
+|keyMarker|Specifies the name of the object after which the listing of multipart upload tasks begins. All multipart upload tasks with objects whose names start with a letter that comes after the keyMarker parameter value in alphabetical order are listed. You can use this parameter with the uploadIdMarker parameter to specify the start point to list the returned results.|ListMultipartUploadsRequest.setKeyMarker\(String keyMarker\)|
+|uploadIdMarker|UploadIdMarker is used with the keyMarker parameter to specify the start point to list the returned results. If the keyMarker parameter is not configured, the uploadIdMarker parameter is invalid. If the keyMarker parameter is configured, the query result includes: -   All objects whose names start with a letter that comes after the keyMarker parameter value in alphabetical order.
+-   All objects whose names start with a letter that is the same as the keyMarker parameter value in alphabetical order and of which the uploadId parameter value is greater than the uploadIdMarker parameter value.
 
- |ListMultipartUploadsRequest.setUploadIdMarker\(String uploadIdMarker\)|
+|ListMultipartUploadsRequest.setUploadIdMarker\(String uploadIdMarker\)|
 
 -   Simple list
 
-    Run the following code to list multipart upload events:
+    The following code provides an example on simple list:
 
-    ``` {#codeblock_5cf_lme_n2n .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     String bucketName = "<yourBucketName>";
@@ -281,34 +284,33 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
     // Create an OSSClient instance.
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     
-    // Lists multipart upload events. You can list 1,000 parts by default.
+    // List multipart upload tasks. By default, 1,000 tasks are listed.
     ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
     MultipartUploadListing multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
     
     for (MultipartUpload multipartUpload : multipartUploadListing.getMultipartUploads()) {
-        // Obtain uploadId.
+        // Query upload IDs.
         multipartUpload.getUploadId();
-        // Obtain object names.
+        // Query object names.
         multipartUpload.getKey();
-        // Obtain the time part upload events are initiated.
+        // Query the time the multipart upload tasks are initiated.
         multipartUpload.getInitiated();
     }
     
-    // Close your OSSClient.
-    ossClient.shutdown();
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                   
     ```
 
-    If the returned result shows that the value of isTruncated is false, the values of nextKeyMarker and nextUploadIdMarker are returned and used as the initial position for the next object reading. If you fail to obtain all part upload events at a time, list them by pagination.
+    If the value of the isTruncated field in the returned result is false, values of nextKeyMarker and nextUploadIdMarker are returned and used as the start point for the next reading. If the response does not contain all multipart upload tasks, list multipart upload tasks by page.
 
--   List all part upload events
+-   List all multipart upload tasks
 
-    By default, listMultipartUploads can only list a maximum of 1,000 parts at a time. To list more than 1,000 parts, run the following code to list all parts:
+    By default, listMultipartUploads can list up to 1,000 multipart upload tasks at a time. The following code provides an example on how to list more than 1,000 multipart upload tasks:
 
-    ``` {#codeblock_9cd_p0v_oa2 .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     String bucketName = "<yourBucketName>";
@@ -316,7 +318,7 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
     // Create an OSSClient instance.
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     
-    // Lists multipart upload events.
+    // List multipart upload tasks.
     MultipartUploadListing multipartUploadListing;
     ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
     
@@ -324,11 +326,11 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
         multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
     
         for (MultipartUpload multipartUpload : multipartUploadListing.getMultipartUploads()) {
-            // Obtain uploadId.
+            // Query upload IDs.
             multipartUpload.getUploadId();
-            // Obtain object names.
+            // Query object names.
             multipartUpload.getKey();
-            // Obtain the time part upload events are initiated.
+            // Query the time the multipart upload tasks are initiated.
             multipartUpload.getInitiated();
         }
     
@@ -337,19 +339,18 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
         listMultipartUploadsRequest.setUploadIdMarker(multipartUploadListing.getNextUploadIdMarker());
     } while (multipartUploadListing.isTruncated());
     
-    // Close your OSSClient.
-    ossClient.shutdown();
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                    
     ```
 
--   List part upload events on one or more pages
+-   List all multipart upload tasks by page
 
-    Run the following code to list part upload events on one or more pages:
+    The following code provides an example on how to list all multipart upload tasks by page:
 
-    ``` {#codeblock_qqx_z5c_r2m .language-java}
-    // This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
     String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-    // It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
     String accessKeyId = "<yourAccessKeyId>";
     String accessKeySecret = "<yourAccessKeySecret>";
     String bucketName = "<yourBucketName>";
@@ -357,21 +358,21 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
     // Create an OSSClient instance.
     OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     
-    // Lists multipart upload events.
+    // List multipart upload tasks.
     MultipartUploadListing multipartUploadListing;
     ListMultipartUploadsRequest listMultipartUploadsRequest = new ListMultipartUploadsRequest(bucketName);
-    // Configure the number of part upload events that can be displayed on each page.
+    // Specify the number of multipart upload tasks to list on each page.
     listMultipartUploadsRequest.setMaxUploads(50);
     
     do {
         multipartUploadListing = ossClient.listMultipartUploads(listMultipartUploadsRequest);
     
         for (MultipartUpload multipartUpload : multipartUploadListing.getMultipartUploads()) {
-            // Obtain uploadId.
+            // Query upload IDs.
             multipartUpload.getUploadId();
-            // Obtain object names.
+            // Query object names.
             multipartUpload.getKey();
-            // Obtain the time part upload events are initiated.
+            // Query the time the multipart upload tasks are initiated.
             multipartUpload.getInitiated();
         }
     
@@ -380,9 +381,8 @@ Call ossClient.listMultipartUploads to list all ongoing part upload events \(eve
     
     } while (multipartUploadListing.isTruncated());
     
-    // Close your OSSClient.
-    ossClient.shutdown();
-    					
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();                    
     ```
 
 
