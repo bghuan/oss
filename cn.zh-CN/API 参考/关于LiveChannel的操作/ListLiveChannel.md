@@ -57,7 +57,10 @@ Authorization: SignatureValue
 
 父节点：LiveChannel
 
-有效值：disabledenabled |
+有效值：
+
+-   disabled：表示禁用LiveChannel。
+-   enabled：表示启用LiveChannel。 |
 |LastModified|字符串|LiveChannel配置的最后修改时间。 格式：ISO8601
 
 子节点：无
