@@ -1,78 +1,74 @@
-# What is OSS? {#concept_ybr_fg1_tdb .concept}
+# What is OSS?
 
-Alibaba Cloud Object Storage Service \(OSS\) is a storage service that enables you to store, back up, and archive any amount of data in the cloud. OSS is a cost-effective, highly secure, and highly reliable cloud storage solution. It uses RESTful APIs and is designed for 99.9999999999% \(12 nines\) durability and 99.995% availability \(service continuity\). Using OSS, you can store and retrieve any type of data at any time, from anywhere on the web.
+Object Storage Service \(OSS\) is a secure, cost-effective, and highly reliable cloud storage service provided by Alibaba Cloud. It enables you to store a large amount of data in the cloud. OSS is designed to provide 99.9999999999 \(twelve 9s\) durability and 99.995% availability of data over a given year.
 
-You can use API and SDK interfaces provided by Alibaba Cloud or OSS migration tools to transfer massive amounts of data into or out of Alibaba Cloud OSS. You can use the Standard storage class of OSS to store image, audio, and video files for apps and large websites. You can use the Infrequent Access \(IA\) or Archive storage class as a low-cost solution for backup and archiving of infrequently accessed data.
+OSS supports RESTful API operations that are independent of the console. You can store and access any type of data anytime, anywhere, and from any application.
 
-## Concepts {#section_h4j_rlb_n2b .section}
+You can use API operations and SDKs provided by Alibaba Cloud or OSS migration tools to transfer large amounts of data into or out of Alibaba Cloud OSS. You can use OSS buckets of the Standard storage class to store image, audio, and video files for apps and large websites. You can use OSS buckets of the Infrequent Access \(IA\), Archive, or Cold Archive storage class to store infrequently accessed objects at a low cost.
 
--   Storage Class
+## Terms
 
-    OSS provides three storage classes: Standard, Infrequent Access, and Archive. These storage classes cover various data storage scenarios from hot data to cold data. For more information, see [Introduction to storage classes](../../../../intl.en-US/Developer Guide/Storage classes/Overview.md#).
+-   storage class
 
--   Bucket
+    The storage class of an object. OSS provides the following storage classes to cover various data storage scenarios from hot data to cold data: Standard, IA, Archive, and Cold Archive. OSS Standard storage provides highly reliable, highly available, and high-performance object storage services that can support frequent data access. OSS IA storage is suitable for storing long-lived, but less frequently accessed data \(an average of once or twice per month\). OSS Archive storage is suitable for long-term storage \(at least six months\) of infrequently accessed data.OSS Cold Archive storage is suitable for storing extremely cold data with ultra-long lifecycles. For more information, see [Introduction to storage classes](/intl.en-US/Developer Guide/Storage classes/Overview.md).
 
-    A bucket is a container for objects stored in OSS. Every object is contained in a bucket. The data model structure of Alibaba Cloud OSS is flat instead of hierarchical.
+-   bucket
 
--   Objects
+    The container used to store objects in OSS. Every object is contained in a bucket. You can configure various attributes of a bucket, including the region, ACL, and storage class. You can create buckets of different storage classes to store data based on your requirement. For more information about how to create a bucket, see [Create buckets](/intl.en-US/Developer Guide/Buckets/Create buckets.md).
 
-    Objects, also known as files, are the fundamental entities stored in OSS. An object is composed of metadata, data, and key. The key is the unique object name in a bucket. Metadata defines the attributes of an object, such as the time last modified and the object size. You can also specify custom metadata of an object.
+-   object
 
--   Region
+    The fundamental entities stored in OSS. Objects are also known as files. An object has metadata, data, and key. The key is the unique object name in a bucket. Object metadata describes the attributes of an object such as the last modification time and the object size. You can also specify custom metadata of an object.
 
-    A region represents the physical location of an OSS data center. You can choose the region where OSS will store the buckets you create. You may choose a region that has the least latency, lowest costs, or that meets certain regulatory requirements. Generally, the closer the user is in proximity to a region, the faster the access speed is. For more information, see [OSS regions and endpoints](../../../../intl.en-US/Developer Guide/Endpoint/Regions and endpoints.md#).
+-   region
 
--   Endpoint
+    The physical location of an OSS data center. You can select the region where your buckets are created based on the cost and the location where the requests come from. For more information, see [Regions and endpoints](/intl.en-US/Developer Guide/Endpoint/Regions and endpoints.md).
 
-    An endpoint is the domain name used to access the OSS. OSS provides external services through HTTP RESTful APIs. Different regions use different endpoints. For the same region, access through an intranet or through the Internet also uses different endpoints. For more information, see [OSS regions and endpoints](../../../../intl.en-US/Developer Guide/Endpoint/Regions and endpoints.md#).
+-   endpoint
 
--   AccessKey
+    The domain name used to access OSS. OSS provides external services by using HTTP RESTful API operations. Different regions use different endpoints. For the same region, access over the internal network or over the Internet also uses different endpoints. For more information, see [Regions and endpoints](/intl.en-US/Developer Guide/Endpoint/Regions and endpoints.md).
 
-    An AccessKey \(AK\) is composed of an AccessKeyId and an AccessKeySecret. They work in pairs to perform access identity verification. OSS verifies the identity of a request sender by using the AccessKeyId/AccessKeySecret symmetric encryption method. The AccessKeyId is used to identify a user. The AccessKeySecret is used for the user to encrypt the signature and for OSS to verify the signature. The AccessKeySecret must be kept confidential.
+-   AccessKey pair
+
+    The key pair composed of an AccessKey ID and an AccessKey secret. The AccessKey pair is used to perform access identity verification. OSS uses an AccessKey pair, which includes an AccessKey ID and an AccessKey secret to implement symmetric encryption and verify the identity of a requester. The AccessKey ID is used to identify a user. The AccessKey secret is used to encrypt the signature string and for OSS to verify the signature string. The AccessKey secret must be kept confidential. For more information about how to obtain an AccessKey pair, see [Create an AccessKey]().
 
 
-## Related services {#section_jcv_xlb_n2b .section}
+## Related services
 
-After you load your data to OSS, you can use it with other Alibaba Cloud products and services.
+After you upload your data to OSS, you can use other Alibaba Cloud products and services to perform operations on the data.
 
 The following services are frequently used with OSS:
 
--   Elastic Compute Service \(ECS\)
+-   Image Processing \(IMG\): a service that allows you to perform various operations on images stored in OSS, including format converting, resizing, cropping, rotating, and adding watermarks. For more information, see [Image processing](/intl.en-US/Data Processing/Image Processing/IMG user guide.md).
+-   Elastic Compute Service \(ECS\): a cloud computing service that offers elastic and efficient computing capability. For more information, see [ECS product homepage](https://www.alibabacloud.com/product/ecs).
+-   Alibaba Cloud CDN: a content delivery service that caches the resources on the original site to edge nodes in different regions for quick access. For more information, see [CDN product homepage](https://www.alibabacloud.com/product/cdn).
+-   E-MapReduce: a big data processing system solution built on ECS. It is based on Apache Hadoop and Apache Spark to facilitate data analysis and processing. For more information, see [E-MapReduce product homepage](https://www.alibabacloud.com/product/e-mapreduce).
+-   ApsaraVideo for Media Processing: a service that converts an audio or video file into another or multiple audio or video files. ApsaraVideo for Media Processing helps you to produce audios and videos that are suitable for PCs, TVs, and mobile devices. On the basis of deep learning of large amounts of data, ApsaraVideo for Media Processing performs multi-model analysis based on the content, text, audio, scenario of audio or video files. It is able to intelligently detect, understand, and edit content. For more information, see [ApsaraVideo for Media Processing product homepage](https://www.alibabacloud.com/product/mts).
 
-    An online computing service that offers elastic and secure virtual cloud servers to cater for all your cloud hosting needs. See the [ECS product details page](https://www.alibabacloud.com/product/ecs).
+## Manage OSS
 
--   Alibaba Cloud CDN
+-   Manage OSS in the OSS console
 
-    A scalable and high-performance content delivery service for accelerated distribution of content to users across the globe. See the [CDN product details page](https://www.alibabacloud.com/product/cdn).
+    OSS provides a web-based console. You can log on to the [OSS console](https://oss.console.aliyun.com/overview) to manage your OSS resources. For more information, see [Console User Guide](/intl.en-US/Console User Guide/Log on to the OSS console/Use Alibaba Cloud accounts to log on to the OSS console.md).
 
--   E-MapReduce
+-   Manage OSS through APIs or SDKs
 
-    A Big Data service that uses Apache Hadoop and Spark to process and analyze data. See the [E-MapReduce product details page.](https://www.alibabacloud.com/product/e-mapreduce)
+    OSS provides RESTful API operations and SDKs in multiple programming languages to facilitate secondary development. For more information, see [API Reference](/intl.en-US/API Reference/API overview.md) and [SDK Reference](SDK Referencet22258.dita#concept_dcn_tp1_kfb).
 
--   ApsaraVideo for Media Processing
+-   Manage OSS by using tools
 
-    A cloud service for transcoding multimedia data into various output resolutions, bit rates, and formats for unhindered playback. See the [ApsaraVideo for Media Processing product details page](https://www.alibabacloud.com/product/mts).
+    OSS provides various tools for you to manage your OSS resources. For more information, see [Tools](/intl.en-US/Tools/OSS tools.md).
 
 
-## Use OSS {#section_o5k_1mb_n2b .section}
+## OSS pricing
 
-Alibaba Cloud provides an intuitive operation interface for you to manage your OSS resources. You can log on to the OSS console to operate your buckets and objects. For more information, see the *OSS Console User Guide*.
-
-You can also use APIs and SDKs to manage your OSS resources. For more information, see [OSS API Reference](../../../../intl.en-US/API Reference/API overview.md#) and [OSS SDK Reference](https://www.alibabacloud.com/help/doc-detail/52834.htm).
-
-## OSS pricing {#section_sv5_nmb_n2b .section}
-
-Traditional storage providers require you to purchase a predetermined amount of storage and network transfer capacity. If you exceed the capacity, your service is shut off or you are charged excess fees. If you do not use the full capacity, you still pay as though you have used it all.
+Traditional storage providers require you to purchase a predetermined amount of storage and network transfer capacity. If the amount and capacity is exceeded, your service is disabled or you are charged excess fees. If you do not use the full capacity, you still pay as though you have used it all.
 
 OSS charges you only for what you actually use, without excess fees. As your business grows, you can enjoy the cost advantages of the flexible infrastructure from Alibaba Cloud, which adapts to meet your ever-changing requirements.
 
-For more information about OSS pricing, see the [OSS Pricing page](https://www.alibabacloud.com/product/oss/pricing).
+For more information about OSS pricing, see [OSS pricing page](https://www.alibabacloud.com/product/oss#pricing). For more information about OSS billing methods, see [Billing items and methods](/intl.en-US/Pricing/Billing items and methods/Overview.md).
 
-## Learning path {#section_lnc_tdc_n2b .section}
+## Learning path
 
-Visit the [OSS Learning Path](https://www.alibabacloud.com/getting-started/learningpath/oss) for the knowledge you need to become an OSS expert!
-
-## Video {#section_u9e_9jb_c9q .section}
-
-You can view the following video to quickly get familiar with OSS:  
+You can visit the [OSS Learning Path](https://www.alibabacloud.com/getting-started/learningpath/oss) to get started with OSS, learn the basic OSS operations, and perform secondary development by using a variety of API operations, SDKs, and convenient tools.
 
