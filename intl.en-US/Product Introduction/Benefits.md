@@ -1,59 +1,54 @@
-# Benefits {#concept_nbc_rh1_tdb .concept}
+# Benefits
 
-Alibaba Cloud Object Storage Service \(OSS\) is a storage service that enables you to store, back up, and archive any amount of data in the cloud. OSS is a cost-effective, highly secure, and highly reliable cloud storage solution. This topic compares OSS with the traditional storage to help you better understand Alibaba Cloud OSS.
+OSS provides secure, cost-effective, and highly reliable services for storing large amounts of data in the cloud. This topic compares OSS with the traditional user-created server storage to show the benefits of OSS.
 
-## Benefits of OSS over traditional storage {#section_g4k_ky2_tdb .section}
+## Advantages of OSS over user-created server storage
 
-|Item|OSS|Traditional storage|
-|:---|:--|-------------------|
-|Reliability| -   Guarantees 99.995% designed service availability.
--   Offers automatic scaling without affecting external services.
--   Guarantees 99.9999999999% \(12 nines\) designed durability.
--   Offers automatic redundant data backup.
+|Item|OSS|User-created server storage|
+|:---|:--|---------------------------|
+|Reliability|OSS is the core infrastructure of data storage for Alibaba Group. This service is highly available and reliable. OSS has provided support during peak hours of Double 11. OSS features a multi-redundant architecture that provides reliable data storage. In addition, OSS is designed based on the high-availability architecture to eliminate single point of failures \(SPOFs\) and ensure the continuity of data-based services. -   Provides 99.995% availability or service continuity \(designed for\).
+-   Provides data durability of at least 99.9999999999% \(twelve 9s\).
+-   Automatically expands capacities without affecting your services.
+-   Automatically stores multiple copies of data for backup.
 
- | -   Depends on hardware reliability. Traditional storage has a relatively high failure rate. If a disk has bad sectors, data may be lost and cannot be recovered.
--   Manual data recovery is complex and involves a lot of time and technical resources.
+|-   Prone to errors due to low hardware reliability. If a disk has a bad sector, data may be lost.
+-   Manual data restoration is complex and requires a lot of time and technical resources. |
+|Security|-   Provides multi-level security protection for enterprises, including features such as server-side encryption, client-side encryption, hotlink protection, IP address blacklist or whitelist, fine-grained permission control, log audit, and Write Once Read Many \(WORM\) policies.
+-   Implements the user resource isolation mechanism and supports geo-disaster recovery.
+-   Obtains a number of compliance certifications, including certifications from institutions such as SEC and FINRA. This way, the data security and compliance requirements of enterprises can be met.
 
- |
-|Security| -   Provides enterprise-grade, multilevel security.
--   Supports multi-user resource isolation and remote disaster recovery.
--   Provides authentication, authorization, IP address blacklist/whitelist, anti-leeching, and RAM account features.
+|-   Additional scrubbing devices and black hole policy-related services are required.
+-   A separate security mechanism is required. |
+|Cost|-   Provides multi-line BGP backbone networks without bandwidth limit. Upstream traffic is free of charge.
+-   Requires no maintenance staff or hosting fees.
 
- | -   Traffic cleaning service and black hole service must be purchased separately.
--   Security must be implemented independently.
+|-   Storage space is limited by hard disk capacity. The storage space must be manually resized.
+-   Single-line or double-line access is slow, and bandwidth is limited. The bandwidth can be manually resized only during peak hours.
+-   Professional maintenance staff is required, which results in high costs. |
+|Intelligent storage|Provides multiple data processing capabilities, such as Image Processing \(IMG\), video snapshot, document preview, image scenario recognition, facial recognition, and SQL in-place query. OSS seamlessly integrates with the Hadoop ecosystem and Alibaba Cloud services such as Function Compute, E-MapReduce, Data Lake Analytics, Batch Compute, MaxCompute, and Database Backup to manage data of enterprises.|Equipment for data processing must be purchased and deployed separately.|
 
- |
-|Cost| -   BGP backbone network without bandwidth restrictions. Upstream traffic is free of charge.
--   No maintenance staff or hosting fees required.
+## More benefits of OSS
 
- | -   Storage space is limited by hardware capacity. Manual scaling is required.
--   Access speeds are slow during single or double-line access. Bandwidth restrictions are imposed. Manual scaling is required during peak traffic periods.
--   Requires professional maintenance staff and high costs.
-
- |
-|Data processing capability|Provides image processing, audio/video transcoding, accelerated content delivery, archive services, and other value-added data services.|Must be purchased and deployed separately.|
-
-## More benefits of OSS {#section_lc4_21b_tdb .section}
-
--   Easy to use
-    -   Provides standard RESTful API interface, a wide range of SDKs, client tools, and a web-based console. You can easily upload, download, retrieve, and manage massive amounts of data for websites and applications in the same way as for regular files in Windows.
-    -   Sets no limit on the number and size of files. Unlike the traditional hardware storage, OSS enables you to easily scale up \(expand\) your storage space as needed.
-    -   Supports streaming upload and download, which is suitable for business scenarios where you need to simultaneously read and write videos and other large files.
-    -   Offers lifecycle management. You can delete expired data in batches or transition the data to low-cost archive services.
--   Powerful and flexible security
-    -   Provides flexible authentication and authorization, including STS, URL, IP address blacklist/whitelist, anti-leeching, and RAM account features
-    -   Offers user-level resource isolation. You can also use the multi-cluster synchronization service \(optional\).
+-   Ease of use
+    -   OSS provides standard RESTful API operations, a wide range of SDKs, client tools, and the OSS console. You can upload, download, retrieve, and manage large amounts of data for websites or mobile applications the way you use regular file systems.
+    -   The capacity of each bucket is unlimited. You can expand your buckets in OSS as required.
+    -   Streaming writes and reads are supported, which is suitable for business scenarios where you must simultaneously read and write videos and other large objects.
+    -   Lifecycle management is supported. You can configure lifecycle rules to delete multiple expired objects or convert the storage class of expired objects to cost-effective Infrequent Access \(IA\), Archive, or Cold Archive.
+-   Powerful and flexible security mechanisms
+    -   Flexible authentication and authorization mechanisms are available. OSS provides STS and URL authentication and authorization. OSS also supports IP address blacklists or whitelists, hotlink protection, and RAM.
+    -   OSS provides user-level resource isolation. You can also use the multi-cluster synchronization service.
 -   Data redundancy mechanism
 
-    OSS uses a data redundancy storage mechanism to store redundant data of each object on multiple devices of different facilities in the same area, ensuring data reliability and availability in case of hardware failure.
+    OSS uses a data redundant storage mechanism to store copies of each object on multiple devices of different facilities in the same region. This way, OSS ensures data reliability and availability in case of hardware failure.
 
-    -   Object operations in OSS are strongly consistent. For example, once a user receives an upload or copy success response, the object can be read immediately, and the redundant data has already been written to multiple devices.
-    -   To ensure complete data transmission, OSS checks whether an error occurs when packets are transmitted between the client and the server by calculating the checksum of the network traffic packets.
-    -   The redundant storage mechanism of OSS can avoid data loss if two storage facilities are damaged at the same time.
-        -   After data is stored in OSS, OSS checks whether redundant data is lost. If yes, OSS recovers the lost redundant data to ensure data reliability and availability.
-        -   OSS periodically checks the integrity of data through verification to discover data damage caused by factors such as hardware failure. If data is partially damaged or lost, OSS reconstructs and repairs the damaged data by using redundant data.
+    -   Operations on objects in OSS are highly consistent. For example, when you receive an upload or copy success response, the uploaded object can be read immediately, and the copies of the object are written to multiple devices for redundancy.
+    -   To ensure complete data transmission, OSS checks for errors when packets are transmitted between the client and the server. To do so, it calculates the checksum of the network traffic packets.
+    -   The data redundancy mechanism of OSS can prevent data loss when two storage devices are damaged at the same time.
+        -   After data is stored in OSS, OSS regularly checks whether copies of the data are lost. Then, OSS recovers lost copies to ensure the durability and availability of data.
+        -   OSS periodically verifies the integrity of data to detect data corruption caused by errors such as hardware failures. If data is partially corrupted or lost, OSS reconstructs and repairs the corrupted data by using the other copies.
 -   Rich and powerful value-added services
-    -   Image processing: Supports format conversion, thumbnails, cropping, watermarks, scaling, and other operations with a wide variety of file formats including jpg, png, bmp, gif, webp, and tiff.
-    -   Audio/video transcoding: Provides high-quality, high-speed, parallel audio/video transcoding capabilities for audio/video files stored in OSS. You can easily make your audio/video files compatible for different types of devices.
-    -   Accelerated content delivery: Content Delivery Network \(CDN\) can be used with OSS to speed up the delivery of content stored in OSS. This service features high stability, unlimited origin bandwidth, and easy configuration.
+    -   IMG: supports format conversion, thumbnails, cropping, watermarking, resizing for objects in formats such as JPG, PNG, BMP, GIF, WebP, and TIFF.
+    -   Audio or video transcoding: provides high-quality, high-speed, and parallel audio or video transcoding capabilities, so that your audio or video files can be played on different terminal devices.
+    -   Accelerated Internet access: provides transfer acceleration that accelerates uploads and downloads across provinces and continents and improves user experience. For more information, see [Transfer acceleration](/intl.en-US/Developer Guide/Buckets/Transfer acceleration.md).
+    -   Accelerated content delivery: uses OSS as the origin with CDN to improve user experience when the same object is repeatedly downloaded.
 
