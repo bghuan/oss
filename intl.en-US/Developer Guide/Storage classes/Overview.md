@@ -44,7 +44,7 @@ Cold Archive provides highly reliable object storage services at prices lower th
 |:---|:-----------|------------|------|:-----|:------|------------|
 |Data durability \(designed for\)|99.999999999% \(eleven 9's\)|99.9999999999% \(twelve 9's\)|99.999999999% \(eleven 9's\)|99.9999999999% \(twelve 9's\)|99.999999999% \(eleven 9's\)|99.999999999% \(eleven 9's\)|
 |Service availability \(designed for\)|99.99%|99.995%|99.99%|99.995%|99.99% \(restored data\)|99.99% \(restored data\)|
-|Service availability|99.99%|99.99%|99.00%|99.5%|99.00% \(restored data\)|99.00% \(restored data\)|
+|Service availability|99.90%|99.95%|99.00%|99.50%|99.00% \(restored data\)|99.00% \(restored data\)|
 |Minimum billable size of objects|None|None|64 KB|64 KB|64 KB|64 KB|
 |Minimum storage period|None|None|30 days|30 days|60 days|180 days|
 |Data retrieval fees|None|None|Based on the size of retrieved data. Unit: GB.|Based on the size of retrieved data. Unit: GB.|Based on the size of restored data. Unit: GB.|Based on the size of restored data and the data retrieval capability that is selected. Unit: GB.|
