@@ -1,29 +1,36 @@
-# Multipart upload {#concept_88477_zh .concept}
+# Multipart upload
 
-To enable multipart upload, perform the following steps:
+By using the multipart upload feature provided by OSS, you can split a large object into multiple parts and upload them separately. After all parts are uploaded, call the CompleteMultipartUpload operation to combine these parts into a single object to implement resumable upload.
 
-1.  Initiate a multipart upload event.
+## Multipart upload process
 
-    You can call $ossClient-\>initiateMultipartUpload to return the globally unique uploadId created in OSS.
+To implement multipart upload, perform the following operations:
 
-2.  Upload parts.
+1.  Initiate a multipart upload task.
 
-    You can call $ossClient-\>uploadPart to upload part data.
+    Call $ossClient-\>initiateMultipartUpload to obtain a unique upload ID in OSS.
 
-    **Note:** 
+2.  Upload the parts.
 
-    -   For parts with a same uploadId, parts are sequenced by their part numbers. If you have uploaded a part and use the same part number to upload another part, the later part will replace the former part.
-    -   Except for the last part, the minimum size of other size is 100 KB. The size of the last part is not limited.
-3.  Complete multipart upload.
+    Call $ossClient-\>uploadPart to upload the parts.
 
-    Call $ossClient-\>completeMultipartUpload to combine these parts into a complete object.
+    **Note:**
+
+    -   Part numbers identify the relative positions of parts in an object that share the same upload ID. If you have uploaded a part and used its part number again to upload another part, the latter part overwrites the former part.
+    -   OSS includes the MD5 hash of part data in the ETag header and returns the MD5 hash to the user.
+    -   OSS calculates the MD5 hash of uploaded data and compares it with the MD5 hash calculated by the SDK. If the two hashes are different, the InvalidDigest error code is returned.
+3.  Complete the multipart upload task.
+
+    Call $ossClient-\>completeMultipartUpload to combine all parts into a complete object.
 
 
-For the complete code of multipart upload, see [GitHub](https://github.com/aliyun/aliyun-oss-php-sdk/blob/master/samples/MultipartUpload.php).
+For the complete code used to perform multipart upload, visit [GitHub](https://github.com/aliyun/aliyun-oss-php-sdk/blob/master/samples/MultipartUpload.php).
 
-The following code is used as a complete example that describes the process of multipart upload:
+## Complete sample code of multipart upload
 
-```language-php
+The following code provides a complete example that describes the process of multipart upload:
+
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -36,22 +43,22 @@ use OSS\OssClient;
 use OSS\Core\OssException;
 use OSS\Core\OssUtil;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 $bucket= "<yourBucketName>";
 $object = "<yourObjectName>";
 $uploadFile = "<yourLocalFile>";
 
 /**
- *  Step 1: Initiate a multipart upload event and obtain the uploadId.
+ * Step 1: Initiate a multipart upload task and obtain the upload ID.
  */
 try{
     $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
 
-    // An uploadId is returned. It is the unique identifier for a part upload event. You can initiate related operations (such as part upload cancelation and query) based on the uploadId.
+    // Obtain the upload ID. The upload ID is the unique identifier for a multipart upload task. You can initiate related operations such as cancel or query a multipart upload task based on the upload ID.
     $uploadId = $ossClient->initiateMultipartUpload($bucket, $object);
 } catch(OssException $e) {
     printf(__FUNCTION__ . ": initiateMultipartUpload FAILED\n");
@@ -60,7 +67,7 @@ try{
 }
 print(__FUNCTION__ . ": initiateMultipartUpload OK" . "\n");
 /*
- * Step 2: Upload parts.
+ * Step 2: Upload the parts.
  */
 $partSize = 10 * 1024 * 1024;
 $uploadFileSize = filesize($uploadFile);
@@ -72,19 +79,24 @@ foreach ($pieces as $i => $piece) {
     $fromPos = $uploadPosition + (integer)$piece[$ossClient::OSS_SEEK_TO];
     $toPos = (integer)$piece[$ossClient::OSS_LENGTH] + $fromPos - 1;
     $upOptions = array(
+        // Specify the local file you want to upload.
         $ossClient::OSS_FILE_UPLOAD => $uploadFile,
+        // Configure part numbers.
         $ossClient::OSS_PART_NUM => ($i + 1),
+        // Specify the position from which to start multipart upload.
         $ossClient::OSS_SEEK_TO => $fromPos,
+        // Specify the object size.
         $ossClient::OSS_LENGTH => $toPos - $fromPos + 1,
+        // Specify whether to enable MD5 verification. A value of true indicates that the MD5 verification is enabled.
         $ossClient::OSS_CHECK_MD5 => $isCheckMd5,
     );
-	// MD5 check.
+    // Enable MD5 verification.
     if ($isCheckMd5) {
         $contentMd5 = OssUtil::getMd5SumForFile($uploadFile, $fromPos, $toPos);
         $upOptions[$ossClient::OSS_CONTENT_MD5] = $contentMd5;
     }
     try {
-		// Upload parts.
+        // Upload the parts.
         $responseUploadPart[] = $ossClient->uploadPart($bucket, $object, $uploadId, $upOptions);
     } catch(OssException $e) {
         printf(__FUNCTION__ . ": initiateMultipartUpload, uploadPart - part#{$i} FAILED\n");
@@ -93,7 +105,7 @@ foreach ($pieces as $i => $piece) {
     }
     printf(__FUNCTION__ . ": initiateMultipartUpload, uploadPart - part#{$i} OK\n");
 }
-// $uploadParts is an array composed by the ETags and part number (PartNumber) of each part.
+// $uploadParts is an array that consists of the ETags and the PartNumbers of each part.
 $uploadParts = array();
 foreach ($responseUploadPart as $i => $eTag) {
     $uploadParts[] = array(
@@ -102,10 +114,10 @@ foreach ($responseUploadPart as $i => $eTag) {
     );
 }
 /**
- * Step 3: Complete multipart upload.
+ * Step 3: Complete the upload.
  */
 try {
-	// You must provide all valid $uploadParts when you perform this operation. OSS verifies the validity of all parts one by one after it receives $uploadParts. After part verification is successful, OSS combines these parts into a complete object.
+    // All valid $uploadParts are required for the completeMultipartUpload operation. OSS verifies the validity of each part after OSS receives the submitted $uploadParts. After all parts are validated, OSS combines these parts into a complete object.
     $ossClient->completeMultipartUpload($bucket, $object, $uploadId, $uploadParts);
 }  catch(OssException $e) {
     printf(__FUNCTION__ . ": completeMultipartUpload FAILED\n");
@@ -113,27 +125,14 @@ try {
     return;
 }
 printf(__FUNCTION__ . ": completeMultipartUpload OK\n");
-
+            
 ```
 
-In the example above, $options includes the following parameters:
+## Upload a local file by using multipart upload
 
-|Parameter|Description|
-|:--------|:----------|
-|$ossClient::OSS\_FILE\_UPLOAD|File upload|
-|OssClient::OSS\_PART\_NUM|Part number|
-|OssClient::OSS\_SEEK\_TO|Specifies a start location.|
-|OssClient::OSS\_LENGTH|Object length|
-|OssClient::OSS\_PART\_SIZE|Part size|
-|OssClient::OSS\_CHECK\_MD5|Determines whether MD5 check is enabled. The MD5 check is enabled if the value is true.|
+The following code provides an example on how to upload a local file to OSS by using multipart upload:
 
-## Cancel a multipart upload event {#section_bkn_5lv_kfb .section}
-
-You can call $ossClient-\>abortMultipartUpload to cancel a multipart upload event. If you cancel a multipart upload event, you are not allowed to perform any other operations with this uploadId anymore. The uploaded parts will be deleted.
-
-Run the following code to cancel a multipart upload event:
-
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -145,48 +144,10 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
-$endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-$bucket= "<yourBucketName>";
-$object = "<yourObjectName>";
-$upload_id = "<yourUploadId>";
-
-try{
-    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-
-    $ossClient->abortMultipartUpload($bucket, $object, $upload_id);
-} catch(OssException $e) {
-    printf(__FUNCTION__ . ": FAILED\n");
-    printf($e->getMessage() . "\n");
-    return;
-}
-print(__FUNCTION__ . ": OK" . "\n");
-
-```
-
-## Upload of a local file using multipart upload { .section}
-
-Run the following code to upload a local file using multipart upload:
-
-```language-php
-<? php
-if (is_file(__DIR__ . '/../autoload.php')) {
-    require_once __DIR__ . '/../autoload.php';
-}
-if (is_file(__DIR__ . '/../vendor/autoload.php')) {
-    require_once __DIR__ . '/../vendor/autoload.php';
-}
-
-use OSS\OssClient;
-use OSS\Core\OssException;
-
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
-$accessKeyId = "<yourAccessKeyId>";
-$accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 $bucket= "<yourBucketName>";
 $object = "<yourObjectName>";
@@ -206,14 +167,14 @@ try{
     return;
 }
 print(__FUNCTION__ . ":  OK" . "\n");
-
+            
 ```
 
-## Upload a directory using multipart upload { .section}
+## Upload a local folder by using multipart upload
 
-Run the following code to upload a local directory \(including all files in it\) using multipart upload:
+The following code provides an example on how to upload a local folder, including all files contained in the folder, to OSS by using multipart upload:
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -225,10 +186,10 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 $bucket= "<yourBucketName>";
 $localDirectory = ".";
@@ -243,14 +204,16 @@ try {
     return;
 }
 print(__FUNCTION__ . ":  OK" . "\n");
-
+            
 ```
 
-## List uploaded parts { .section}
+## Cancel a multipart upload task
 
-Run the following code to list uploaded parts:
+You can call $ossClient-\>abortMultipartUpload to cancel a multipart upload task. If you cancel a multipart upload task, you cannot use the upload ID to upload any part. The uploaded parts are deleted.
 
-```language-php
+The following code provides an example on how to cancel a multipart upload task:
+
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -262,10 +225,48 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
+$endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+$bucket= "<yourBucketName>";
+$object = "<yourObjectName>";
+$upload_id = "<yourUploadId>";
+
+try{
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+
+    $ossClient->abortMultipartUpload($bucket, $object, $upload_id);
+} catch(OssException $e) {
+    printf(__FUNCTION__ . ": FAILED\n");
+    printf($e->getMessage() . "\n");
+    return;
+}
+print(__FUNCTION__ . ": OK" . "\n");
+            
+```
+
+## List uploaded parts
+
+The following code provides an example on how to list uploaded parts:
+
+```
+<? php
+if (is_file(__DIR__ . '/../autoload.php')) {
+    require_once __DIR__ . '/../autoload.php';
+}
+if (is_file(__DIR__ . '/../vendor/autoload.php')) {
+    require_once __DIR__ . '/../vendor/autoload.php';
+}
+
+use OSS\OssClient;
+use OSS\Core\OssException;
+
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
+$accessKeyId = "<yourAccessKeyId>";
+$accessKeySecret = "<yourAccessKeySecret>";
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 $bucket= "<yourBucketName>";
 $object = "<yourObjectName>";
@@ -284,15 +285,14 @@ try{
     return;
 }
 print(__FUNCTION__ . ": OK" . "\n");
-
+            
 ```
 
-## List all multipart upload events { .section}
+## List multipart upload tasks
 
-Run the following code to list all multipart upload events:
+The following code provides an example on how to list multipart upload tasks:
 
-```language-php
-<? php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -304,10 +304,10 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China East 1 (Hangzhou). Specify the actual endpoint based on your requirements.
+// The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
 $bucket= "<yourBucketName>";
 
@@ -330,19 +330,17 @@ try {
 printf(__FUNCTION__ . ": listMultipartUploads OK\n");
 $listUploadInfo = $listMultipartUploadInfo->getUploads();
 var_dump($listUploadInfo);
-
+            
 ```
 
-Parameters of $options are described as follows:
+The following table describes the parameters you can configure for $options.
 
 |Parameter|Description|
 |:--------|:----------|
-|delimiter|Specifies a delimiter of a forward slash \(/\) used to group object names. The object between the specified prefix and the first occurrence of a delimiter of a forward slash \(/\) is commonPrefixes.|
-|key-marker|Lists all part upload events with the object whose names start with a letter that comes after the key-marker value in the alphabetical order. You can use this parameter with the upload-id-marker parameter to specify the initial position for the specified returned result.|
-|max-uploads|Specifies the maximum number of part upload events. The maximum value \(also default value\) you can set is 1,000.|
-|prefix|Specifies the prefix that must be included in the returned object name. Note that if you use a prefix for query, the returned object name will contain the prefix.|
-|upload-id-marker|You can use this parameter with the key-marker parameter to specify the initial position for the specified returned result. If you do not configure keyMarker, the uploadIdMarker parameter is invalid. If you configure key-marker, the query result contains:-   All objects whose names start with a letter that comes after the keyMarker value.
--   All objects whose names start with a letter that is the same as the key-marker value in the alphabetical order and the value of uploadId greater than that of upload-id-marker.
-
-|
+|delimiter|Groups objects by name. Objects whose names contain the same string from the prefix and the next occurrence of the delimiter are grouped as a single result element in CommonPrefixes.|
+|key-marker|Lists all multipart upload tasks for objects whose names are alphabetically greater than the key-marker value. This parameter is used together with the upload-id-marker parameter to specify the position from which the next list begins.|
+|max-uploads|Specifies the maximum number of multipart upload tasks to return each time. The default value is 1000. The maximum value is 1000.|
+|prefix|Specifies the prefix that returned object names must contain. **Note:** Note that if you use a prefix for a query, the returned object names contain the prefix. |
+|upload-id-marker|The upload ID of the multipart upload task after which the list begins. This parameter is used together with the key-marker parameter. If key-marker is not configured, upload-id-marker is invalid. If key-marker is configured, the query result includes: -   All objects whose names are alphabetically greater than the key-marker value.
+-   All objects whose names are the same as the key-marker parameter value and of which the uploadId parameter value is greater than the upload-id-marker parameter value. |
 
