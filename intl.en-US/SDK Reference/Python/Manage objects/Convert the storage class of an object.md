@@ -1,14 +1,14 @@
-# Convert the storage class of an object {#concept_189228 .concept}
+# Convert the storage class of an object
 
-OSS provides the following storage classes to cover various data storage scenarios from hot data to cold data: Standard, Infrequent Access \(IA\), and Archive. This topic describes how to convert the storage class of an object.
+OSS provides the following storage classes to cover various data storage scenarios from hot data to cold data: Standard, Infrequent Access \(IA\), Archive and Cold Archive. This topic describes how to convert the storage class of an object.
 
-For more information about these storage classes, see [Introduction to storage classes](../../../../reseller.en-US/Developer Guide/Storage classes/Introduction to storage classes.md#) and [Convert between storage classes](../../../../reseller.en-US/Developer Guide/Storage classes/Convert between storage classes.md#) in the OSS Developer Guide.
+For more information about these storage classes, see [Overview](/intl.en-US/Developer Guide/Storage classes/Overview.md) and [Convert storage classes](/intl.en-US/Developer Guide/Storage classes/Convert storage classes.md) in the OSS Developer Guide.
 
 The following code provides an example of how to convert the storage class of an object.
 
 -   The following code provides an example of how to convert the storage class of an object from Standard or IA to Archive:
 
-    ``` {#codeblock_b58_wef_8du}
+    ```
     # -*- coding: utf-8 -*-
     import oss2
     import os
@@ -25,12 +25,12 @@ The following code provides an example of how to convert the storage class of an
     
     # Modify the storage class of the object.
     bucket.copy_object(bucket.bucket_name, object_name, object_name, headers)
-    					
+                        
     ```
 
 -   The following code provides an example of how to convert the storage class of an object from Archive to IA:
 
-    ``` {#codeblock_zvg_1fo_1j9}
+    ```
     # -*- coding: utf-8 -*-
     import oss2
     import os
@@ -64,5 +64,5 @@ The following code provides an example of how to convert the storage class of an
     ```
 
 
-For more information about the storage classes and storage fees, see the [Storage fees](../../../../reseller.en-US/Pricing/Billing items.md#section_jmi_2z4_hka) section in Billing items.
+For more information about the storage classes and storage fees, see the [t4320.md\#section\_jmi\_2z4\_hka](/intl.en-US/Pricing/Billing items and methods/Overview.md) section in Billing items.
 
