@@ -31,7 +31,7 @@ Authorization: SignatureValue
 |--|--|--|
 |ListAllMyBucketsResult|容器|保存Get Service请求结果的容器。 子节点：Owner、Buckets
 
- 父节点：None |
+父节点：None |
 |Prefix|字符串|本次查询结果的前缀。 父节点：ListAllMyBucketsResult |
 |Marker|字符串|标明这次GetService \(ListBucket\)的起点。 父节点：ListAllMyBucketsResult |
 |MaxKeys|字符串|响应请求内返回结果的最大数目。 父节点：ListAllMyBucketsResult |
@@ -40,28 +40,23 @@ Authorization: SignatureValue
 -   true表示本次没有返回全部结果。
 -   false表示本次已经返回了全部结果。
 
- 父节点：ListAllMyBucketsResult |
+父节点：ListAllMyBucketsResult |
 |NextMarker|字符串|用于继续查询时给marker赋值。表示下一次GetService \(ListBucket\)可以以此为marker，将未返回的结果返回。 父节点：ListAllMyBucketsResult |
 |Owner|容器|用于存放Bucket拥有者信息的容器。 父节点：ListAllMyBucketsResult |
 |ID|字符串|Bucket拥有者的用户ID。 父节点：ListAllMyBucketsResult.Owner |
 |DisplayName|字符串|Bucket拥有者的名称 （目前和ID一致）。 父节点：ListAllMyBucketsResult.Owner |
 |Buckets|容器|保存多个Bucket信息的容器。 子节点：Bucket
 
- 父节点：ListAllMyBucketsResult |
+父节点：ListAllMyBucketsResult |
 |Bucket|容器|保存bucket信息的容器。 子节点：Name, CreationDate, Location
 
- 父节点：ListAllMyBucketsResult.Buckets |
+父节点：ListAllMyBucketsResult.Buckets |
 |Name|字符串|Bucket名称。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
 |CreateDate|时间 （格式：yyyy-mm-ddThh:mm:ss.timezone, 例如 2011-12-01T12:27:13.000Z）|Bucket创建时间。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
 |Location|字符串|Bucket所在的数据中心。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
 |ExtranetEndpoint|字符串|Bucket访问的外网域名。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
 |IntranetEndpoint|字符串|同区域ECS访问Bucket的内网域名。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
-|StorageClass|字符串|Bucket存储类型，支持Standard、IA、Archive三种存储类型。
-
- Bucket存储类型，支持Standard、IA、Archive和ColdArchive四种存储类型。
-
- 父节点：ListAllMyBucketsResult.Buckets.Bucket |
-|Comment|字符串|Bucket的备注内容。 父节点：ListAllMyBucketsResult.Buckets.Bucket |
+|StorageClass|字符串|Bucket存储类型，支持Standard、IA、Archive和ColdArchive四种存储类型。父节点：ListAllMyBucketsResult.Buckets.Bucket |
 
 ## 示例
 
@@ -162,9 +157,7 @@ Authorization: SignatureValue
 
 此接口所对应的各语言SDK如下：
 
--   [Java](/intl.zh-CN/SDK 示例/Java/存储空间/列举存储空间.md)
 -   [Java](/intl.zh-CN/SDK 示例/Java/存储空间/创建存储空间.md)
--   [Python](/intl.zh-CN/SDK 示例/Python/存储空间/列举存储空间.md)
 -   [Python](/intl.zh-CN/SDK 示例/Python/存储空间/创建存储空间.md)
 -   [PHP](/intl.zh-CN/SDK 示例/PHP/存储空间/创建存储空间.md)
 -   [Go](/intl.zh-CN/SDK 示例/Go/存储空间/创建存储空间.md)
