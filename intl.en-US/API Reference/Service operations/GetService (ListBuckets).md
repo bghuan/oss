@@ -1,10 +1,10 @@
 # GetService \(ListBuckets\)
 
-You can call this operation to obtain all buckets that you own. The forward slash \(/\) in the request syntax represents the root directory.
+You can call this operation to obtain all buckets that you have. The forward slash \(/\) in the request syntax represents the root folder.
 
 **Note:** The GetService \(ListBuckets\) operation is valid only for authenticated users.
 
-## Request syntax
+## Request structure
 
 ```
 GET / HTTP/1.1
@@ -15,53 +15,54 @@ Authorization: SignatureValue
 
 ## Request parameters
 
-**Note:** When using GetService\(ListBuckets\), you can set the parameters described in the following table to limit the list of buckets returned so that only specified results are returned.
+**Note:** When you use GetService \(ListBuckets\), you can set the parameters described in the following table to limit the list of buckets returned so that only specified results are returned.
 
-|Parameter|Type|Required|Description|
-|---------|----|--------|-----------|
+|Element|Type|Required|Description|
+|-------|----|--------|-----------|
 |prefix|String|No|Specifies the prefix that returned bucket names must contain. If this parameter is not specified, prefix information is not used to filter the returned buckets. Default value: null |
 |marker|String|No|Specifies the name of the bucket after which the list begins. If this parameter is not specified, all results are returned. Default value: null |
-|max-keys|Integer|No|Specifies the maximum number of buckets that can be returned each time. If this parameter is not specified, default value 100 is used. The maximum value is 1000. Default value: 100 |
+|max-keys|Integer|No|Specifies the maximum number of buckets that can be returned each time. If this parameter is not specified, the default value is 100. The maximum value is 1000. Default value: 100 |
 
 ## Response elements
 
-**Note:** When all buckets are returned, the returned XML does not contain Prefix, Marker, MaxKeys, IsTruncated, and NextMarker. If some results are not returned, the preceding nodes are added.
+**Note:** When all buckets are returned, the returned XML does not contain Prefix, Marker, MaxKeys, IsTruncated, or NextMarker. If a part of results are not returned, the preceding nodes are added.
 
 |Element|Type|Description|
 |-------|----|-----------|
-|ListAllMyBucketsResult|Container|Indicates the container used to store results of the GetService request. Child node: Owner and Buckets
+|ListAllMyBucketsResult|Container|The container used to store results of the GetService request. Child nodes: Owner and Buckets
 
- Parent node: none |
-|Prefix|String|Indicates the prefix that the returned object names must contain. Parent node: ListAllMyBucketsResult |
-|Marker|String|Indicates the name of the bucket after which the list begins. Parent node: ListAllMyBucketsResult |
-|MaxKeys|String|Indicates the maximum number of buckets returned each time. Parent node: ListAllMyBucketsResult |
-|IsTruncated|Boolean|Indicates whether all results have been returned. Valid values: true and false
+Parent nodes: none |
+|Prefix|String|The prefix that the returned object names must contain. Parent nodes: ListAllMyBucketsResult |
+|Marker|String|The name of the bucket after which the list begins. Parent nodes: ListAllMyBucketsResult |
+|MaxKeys|String|The maximum number of buckets returned each time. Parent nodes: ListAllMyBucketsResult |
+|IsTruncated|Enumerated string|Specifies whether all results are returned. Valid values: true and false
 
--   true indicates that not all results are returned this time.
--   false indicates that all results have been returned this time.
+-   true indicates that not all of the results are returned this time.
+-   false indicates that all of the results are returned this time.
 
- Parent node: ListAllMyBucketsResult |
-|NextMarker|String|Indicates the marker for the next GetService\(ListBuckets\) request, which can be used to return the results that are not returned this time. Parent node: ListAllMyBucketsResult |
-|Owner|Container|Indicates the container used to store the information about the bucket owner. Parent node: ListAllMyBucketsResult |
-|ID|String|Indicates the user ID of the bucket owner. Parent node: ListAllMyBucketsResult.Owner |
-|DisplayName|String|Indicates the name of the bucket owner, which is currently the same as the user ID. Parent node: ListAllMyBucketsResult.Owner |
-|Buckets|Container|Indicates the container that stores the information about multiple buckets. Child node: Bucket
+Parent nodes: ListAllMyBucketsResult |
+|NextMarker|String|The marker for the next GetService \(ListBuckets\) request, which can be used to return the results that are not returned this time. Parent nodes: ListAllMyBucketsResult |
+|Owner|Container|The container used to store the information of the bucket owner. Parent nodes: ListAllMyBucketsResult |
+|ID|String|The user ID of the bucket owner. Parent nodes: ListAllMyBucketsResult and Owner |
+|DisplayName|String|The name of the bucket owner, which is the same as the user ID. Parent nodes: ListAllMyBucketsResult and Owner |
+|Buckets|Container|The container that stores the information about multiple buckets. Child nodes: Bucket
 
- Parent node: ListAllMyBucketsResult |
-|Bucket|Container|Indicates the container used to store the bucket information. Child node: Name, CreationDate, and Location
+Parent nodes: ListAllMyBucketsResult |
+|Bucket|Container|The container used to store the bucket information. Child nodes: Name, CreationDate, and Location
 
- Parent node: ListAllMyBucketsResult.Buckets |
-|Name|String|Indicates the name of the bucket. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|CreateDate|Time \(Format: yyyy-mm-ddThh:mm:ss.timezone. Example: 2011-12-01T12:27:13.000Z\)|Indicates the time when the bucket is created. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|Location|String|Indicates the data center in which the bucket is located. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|ExtranetEndpoint|String|Indicates the public endpoint used to access the bucket over the Internet. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|IntranetEndpoint|String|Indicates the internal endpoint used to access the bucket from ECS instances in the same region. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|StorageClass|String|Indicates the storage class of the bucket. Valid values: Standard, IA, Archive and ColdArchive. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
-|Comment|String|Indicates the comments on the bucket. Parent node: ListAllMyBucketsResult.Buckets.Bucket |
+Parent nodes: ListAllMyBucketsResult and Buckets |
+|Name|String|The name of the bucket. Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
+|CreateDate|Time \(Format: yyyy-mm-ddThh:mm:ss.timezone. Example: 2011-12-01T12:27:13.000Z\)|The time when the bucket is created. Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
+|Location|String|The data center in which the bucket is located. Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
+|ExtranetEndpoint|String|The public endpoint used to access the bucket over the Internet. Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
+|IntranetEndpoint|String|The internal endpoint used to access the bucket from ECS instances in the same region. Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
+|StorageClass|String|The storage class of the bucket.Valid values: Standard, IA, Archive, and ColdArchive
+
+Parent nodes: ListAllMyBucketsResult, Buckets, and Bucket |
 
 ## Examples
 
--   Sample request 1
+-   Sample Request 1
 
     ```
     GET / HTTP/1.1
@@ -70,7 +71,7 @@ Authorization: SignatureValue
     Authorization: OSS nxj7dtlhcyl5hpvnhi:COS3OQkfQPnKmYZTEHYv2******
     ```
 
-    Sample response 1
+    Sample Response 1
 
     ```
     HTTP/1.1 200 OK
@@ -80,7 +81,7 @@ Authorization: SignatureValue
     Connection: keep-alive
     Server: AliyunOSS
     x-oss-request-id: 5374A2880232A65C2300****
-    <?xml version="1.0" encoding="UTF-8"?>
+    <? xml version="1.0" encoding="UTF-8"? >
     <ListAllMyBucketsResult>
       <Owner>
         <ID>512**</ID>
@@ -109,7 +110,7 @@ Authorization: SignatureValue
     </ListAllMyBucketsResult>
     ```
 
--   Sample request 2
+-   Sample Request 2
 
     ```
     GET /? prefix=xz02tphky6fjfiuc&max-keys=1 HTTP/1.1
@@ -118,7 +119,7 @@ Authorization: SignatureValue
     Authorization: OSS nxj7dtwhcyl5hpvnhi:COS3OQkfQPnKmYZTEHYv2****
     ```
 
-    Sample response 2
+    Sample Response 2
 
     ```
     HTTP/1.1 200 OK
@@ -128,7 +129,7 @@ Authorization: SignatureValue
     Connection: keep-alive
     Server: AliyunOSS
     x-oss-request-id: 5374A2880232A65C2300****
-    <?xml version="1.0" encoding="UTF-8"?>
+    <? xml version="1.0" encoding="UTF-8"? >
     <ListAllMyBucketsResult>
       <Prefix>xz02tphky6fjfiuc</Prefix>
       <Marker></Marker>
@@ -154,9 +155,9 @@ Authorization: SignatureValue
     ```
 
 
-## SDKs
+## SDK
 
-The SDKs of the GetService operation for various programming languages are as follows:
+SDKs of the GetService \(ListBuckets\) operation for various programming languages:
 
 -   [Java](/intl.en-US/SDK Reference/Java/Buckets/Create buckets.md)
 -   [Python](/intl.en-US/SDK Reference/Python/Buckets/Create a bucket.md)
