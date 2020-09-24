@@ -1,37 +1,33 @@
-# Set the ACL for a bucket {#concept_fnt_4z1_5db .concept}
+# Set the ACL for a bucket
 
-You can set the access control list \(ACL\) when creating a bucket, or modify the ACL for a created bucket based on your business needs. Only bucket owners can set or modify the ACL for buckets.
+You can set the access control list \(ACL\) when you create a bucket, or modify the ACL for a created bucket. Only bucket owners can set or modify the ACL for buckets.
 
 The following table describes the three types of ACLs for buckets.
 
-|ACL|Description|Access control|
-|:--|:----------|:-------------|
-|public-read-write|The public-read-write permission.|Anyone \(including anonymous users\) can perform read and write operations on the objects in the bucket. **Warning:** All users on the Internet can have access to the objects in the bucket and write data to the bucket. This may leak your bucket data and sharply increase your fees. If anyone maliciously writes illegal information, they may also infringe on your legitimate interests and rights. Therefore, we do recommend that you do not set your bucket ACL to public-read-write except for special needs.
+|ACL|Description|Description|
+|:--|:----------|:----------|
+|public-read-write|Public read/write|Anyone \(including anonymous users\) can read and write the objects in the bucket. **Warning:** All Internet users can access the objects in the bucket and write data to the bucket. This may cause unexpected access to the data in your bucket, and cause an increase in your fees. If a user uploads prohibited data or information, it may affect your legitimate interests and rights. Therefore, we recommend that you do not set your bucket ACL to Public Read/Write except in special cases. |
+|public-read|Public read|Only the bucket owner can perform write operations on the objects in the bucket. Other users \(including anonymous users\) can perform only read operations on the objects in the bucket. **Warning:** All Internet users can access the objects in the bucket. This configuration may cause unwanted access to the data in your bucket, and cause an increase in your fees. Therefore, we recommend that you exercise caution when you set your bucket ACL to Public Read. |
+|private|Private|Only the bucket owner can perform read and write operations on the objects in the bucket. Other users have no access to the objects in the bucket.|
 
- |
-|public-read|The public-read permission.|Only the bucket owner can perform write operations on the objects in the bucket. Other users \(including anonymous users\) can perform only read operations on the objects in the bucket. **Warning:** All users on the Internet can have access to the objects in the bucket. This may leak your bucket data and sharply increase your fees. Therefore, we recommend that you set your bucket ACL to public-read with caution.
+## Implementation modes
 
- |
-|private|The private permission.|Only the bucket owner can perform read and write operations on the objects in the bucket. Other users have no access to the objects in the bucket.|
+|Implementation mode|Description|
+|-------------------|-----------|
+|[Console](/intl.en-US/Console User Guide/Manage buckets/Access control/Modify bucket ACLs.md)|A user-friendly and intuitive web application|
+|[ossbrowser](/intl.en-US/Tools/ossbrowser/Quick start.md)|An easy-to-operate graphical tool|
+|[ossutil](/intl.en-US/Tools/ossutil/Common commands/set-acl.md)|A high-performance command-line tool|
+|[Java SDK](/intl.en-US/SDK Reference/Java/Buckets/Manage bucket ACLs.md)|SDK demos for various programming languages|
+|[Python SDK](/intl.en-US/SDK Reference/Python/Buckets/Manage bucket ACLs.md)|
+|[PHP SDK](/intl.en-US/SDK Reference/Java/Buckets/Manage bucket ACLs.md)|
+|[Go SDK](/intl.en-US/SDK Reference/Go/Buckets/Manage bucket ACLs.md)|
+|[C SDK](/intl.en-US/SDK Reference/C/Buckets/Manage bucket ACLs.md)|
+|[.NET SDK](/intl.en-US/SDK Reference/. NET/Buckets/Manage bucket ACLs.md)|
+|[Node.js SDK](/intl.en-US/SDK Reference/Node. js/Buckets/Manage bucket ACLs.md)|
+|[Ruby SDK](/intl.en-US/SDK Reference/Ruby/Buckets/Manage bucket ACLs.md)|
 
-## Operating methods {#section_bdy_cv3_kgb .section}
+## References
 
-|Operating method|Description|
-|----------------|-----------|
-|[Console](../../../../reseller.en-US/Console User Guide/Manage buckets/Change bucket ACL.md#)|Web application, which is intuitive and easy to use|
-|[ossbrowser](../../../../reseller.en-US/Tools/ossbrowser/Quick start.md#)|Graphical tool, which is easy to operate|
-|[ossutil](../../../../reseller.en-US/Tools/ossutil/Bucket-related commands.md#ul_imw_f5s_vdb)|Command-line tool, which delivers good performance|
-|[Java SDK](../../../../reseller.en-US/SDK Reference/Java/Manage a bucket.md#table_grn_jjf_2gb)|SDK demos in various languages|
-|[Python SDK](../../../../reseller.en-US/SDK Reference/Python/Bucket.md#section_rvh_l1j_kfb)|
-|[PHP SDK](../../../../reseller.en-US/SDK Reference/PHP/Bucket.md#section_ond_15p_kfb)|
-|[Go SDK](../../../../reseller.en-US/SDK Reference/Go/Bucket.md#)|
-|[C SDK](../../../../reseller.en-US/SDK Reference/C/Bucket.md#)|
-|[.NET SDK](../../../../reseller.en-US/SDK Reference/. NET/Manage a bucket.md#)|
-|[Node.js SDK](../../../../reseller.en-US/SDK Reference/Node. js/Manage a bucket.md#ul_ict_gqk_lfb)|
-|[Ruby SDK](../../../../reseller.en-US/SDK Reference/Ruby/Manage buckets.md#ul_px3_pnn_lfb)|
-
-## Reference {#section_skh_zd4_vgb .section}
-
--   [Overview](reseller.en-US/Developer Guide/Access and control/Overview.md#)
--   [Overview](reseller.en-US/Developer Guide/Access and control/Cross-account authorization/Overview.md#)
+-   [Overview](/intl.en-US/Developer Guide/Data security/Access and control/Overview.md)
+-   [Overview]()
 
