@@ -171,8 +171,11 @@ In a versioning-enabled bucket, each object has a current version and may have p
 
 -   Example 1
 
-    You can perform the following operations to reduce storage costs: 1. Convert the object to the Archive 60 days after the object becomes a previous version. 2. Delete the object 90 days after the object becomes a previous version. 3. Convert the current version of the object to IA 120 days after the object is last modified. You can configure lifecycle rules to reduce storage costs:
+    You can perform the following operations to reduce storage costs:
 
+    -   Convert the current version of the object to IA 10 days after the object is last modified.
+    -   Convert the object to the Archive 60 days after the object becomes a previous version.
+    -   Delete the object 90 days after the object becomes a previous version.
     ```
     <LifecycleConfiguration>
       <Rule>
