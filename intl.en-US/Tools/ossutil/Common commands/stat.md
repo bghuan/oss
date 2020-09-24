@@ -1,54 +1,68 @@
-# stat {#concept_303806 .concept}
+# stat
 
-The stat command is used to obtain the description of buckets or objects. For example, you can run the stat command to view the object metadata that is set by running the set-meta command.
+The stat command is used to query the description of buckets or objects. For example, you can run the stat command to view the object metadata that is set by running the set-meta command.
 
-## Command syntax {#section_liy_tm3_sni .section}
+**Note:**
 
-``` {#codeblock_rfh_wfz_50f}
+-   The commands described in this topic apply to Linux systems. To use the commands in other systems, replace ./ossutil in the command with the actual executable program name. For example, you can use the help command in 32-bit Windows systems by running ossutil32.exe help.
+-   To run the stat command to view object metadata by using a RAM user, the RAM user must have permissions to perform the HeadObject, GetObjectAcl, and GetBucketInfo operations on the objects.
+
+## Command syntax
+
+```
 ./ossutil stat oss://bucket[/object] [--encoding-type url] [--payer requester] [-c file]
 ```
 
-## Examples {#section_vnz_n0s_8bv .section}
+## Examples
 
--   Obtain information of a bucket
+-   Query the information about a bucket
 
-    ``` {#codeblock_4dg_535_k9b}
+    ```
      ./ossutil stat oss://bucket1
     ```
 
--   Obtain information of a specified object
+-   Query the information about a specified object
 
-    ``` {#codeblock_a8b_zec_e1a}
+    ```
     ./ossutil stat oss://bucket1/object
     ```
 
--   Obtain information of an object whose names contain special characters
+-   Query the information about an object whose names contain special characters
 
-    ossutil only supports URL encoding for object names. If an object name contains special characters, you can encode these special characters before you use the object name in the command.
+    ossutil only supports URL encoding for object names. If an object name contains special characters, you can encode these special characters before you use the object name in the command. For example, you can run the following command to query the information about an object named 示例.txt:
 
-    ``` {#codeblock_pya_uir_67f}
+    ```
     ./ossutil stat oss://bucket1/%E7%A4%BA%E4%BE%8B.txt --encoding-type url
     ```
 
     **Note:** Bucket names cannot be URL-encoded.
 
+-   View a specified version of an object in a bucket that has versioning enabled
 
-## Common options {#section_bft_79i_yvp .section}
+    ```
+    ./ossutil stat oss://bucket1/test.jpg --version-id  CAEQARiBgID8rumR2hYiIGUyOTAyZGY2MzU5MjQ5ZjlhYzQzZjNlYTAyZDE3MDRk
+    ```
+
+    To use the `--version-id` option, you must run the [ls --all-versions](/intl.en-US/Tools/ossutil/Common commands/ls.md) command to obtain all available versions of the object.
+
+    **Note:** The `--version-id` option can be used only for objects in versioning-enabled buckets. For more information about the command that is used to enable versioning on a bucket, see [bucket-versioning](/intl.en-US/Tools/ossutil/Common commands/bucket-versioning.md).
+
+
+## Common options
 
 The following table describes the options you can add to the stat command.
 
 |Option|Description|
 |------|-----------|
-|--encoding-type|Specifies the encoding type of the object name. If this option is specified, this value must be url. If this option is not specified, the object name is not encoded. Bucket names cannot be URL-encoded.|
-|--loglevel|Specifies the log level. The default value is null, indicating that no log files are generated. Valid values: -   info: generates prompt logs.
--   debug: generates detailed logs that contain corresponding HTTP request and response information.
-
- |
+|--encoding-type|Specifies the method used to encode the object name. If this option is specified, the value must be url. If this option is not specified, the object name is not encoded. Bucket names cannot be URL-encoded.|
+|--loglevel|Specifies the log level. The default value is null, which indicates that no log files are generated. Valid values: -   info: generates prompt logs.
+-   debug: generates detailed logs that contain corresponding HTTP request and response information. |
 |--retry-times|Specifies the number of times an operation is retried if the operation fails. Valid values: 1 to 500. Default value: 10.|
-|--payer|Specifies the payer of the request. To enable the pay-by-requester mode, set this option to requester.|
-|--proxy-host|Specifies the URL of the proxy server. HTTP, HTTPS, and SOCKS5 are supported. An example of the URL is http://120.79. \*\*.\*\*:3128 or socks5://120.79. \*\*. \*\*:1080.|
+|--version-id|Specifies the version ID of an object in a versioned bucket.|
+|--payer|Specifies the payer of the request. To enable pay-by-requester, set this option to requester.|
+|--proxy-host|Specifies the URL of the proxy server. HTTP, HTTPS, and SOCKS5 proxies are supported. Examples: http://120.79. \*\*.\*\*:3128 or socks5://120.79. \*\*. \*\*:1080.|
 |--proxy-user|Specifies the username of the proxy server. The default value is null.|
-|--proxy-pwd|Specifies the password of the proxy server. The default value is null.|
+|--proxy-pwd|Specifies the password for the proxy server. The default value is null.|
 
-**Note:** For more information about common options, see [View all supported options](reseller.en-US/Tools/ossutil/View all supported options.md#).
+**Note:** For more information about common options, see [View options](/intl.en-US/Tools/ossutil/View options.md).
 
