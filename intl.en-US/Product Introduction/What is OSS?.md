@@ -30,7 +30,7 @@ You can use API operations and SDKs provided by Alibaba Cloud or OSS migration t
 
 -   AccessKey pair
 
-    The key pair composed of an AccessKey ID and an AccessKey secret. The AccessKey pair is used to perform access identity verification. OSS uses an AccessKey pair, which includes an AccessKey ID and an AccessKey secret to implement symmetric encryption and verify the identity of a requester. The AccessKey ID is used to identify a user. The AccessKey secret is used to encrypt the signature string and for OSS to verify the signature string. The AccessKey secret must be kept confidential. For more information about how to obtain an AccessKey pair, see [Create an AccessKey]().
+    The key pair composed of an AccessKey ID and an AccessKey secret. The AccessKey pair is used to perform access identity verification. OSS uses an AccessKey pair, which includes an AccessKey ID and an AccessKey secret to implement symmetric encryption and verify the identity of a requester. The AccessKey ID is used to identify a user. The AccessKey secret is used to encrypt the signature string and for OSS to verify the signature string. The AccessKey secret must be kept confidential. For more information about how to obtain an AccessKey pair, see [Create an AccessKey pair]().
 
 
 ## Related services
@@ -39,7 +39,7 @@ After you upload your data to OSS, you can use other Alibaba Cloud products and 
 
 The following services are frequently used with OSS:
 
--   Image Processing \(IMG\): a service that allows you to perform various operations on images stored in OSS, including format converting, resizing, cropping, rotating, and adding watermarks. For more information, see [Image processing](/intl.en-US/Data Processing/Image Processing/IMG user guide.md).
+-   Image Processing \(IMG\): a service that allows you to perform various operations on images stored in OSS, including format converting, resizing, cropping, rotating, and adding watermarks. For more information, see [Image processing](/intl.en-US/Developer Guide/Data Processing/Image Processing/IMG user guide.md).
 -   Elastic Compute Service \(ECS\): a cloud computing service that offers elastic and efficient computing capability. For more information, see [ECS product homepage](https://www.alibabacloud.com/product/ecs).
 -   Alibaba Cloud CDN: a content delivery service that caches the resources on the original site to edge nodes in different regions for quick access. For more information, see [CDN product homepage](https://www.alibabacloud.com/product/cdn).
 -   E-MapReduce: a big data processing system solution built on ECS. It is based on Apache Hadoop and Apache Spark to facilitate data analysis and processing. For more information, see [E-MapReduce product homepage](https://www.alibabacloud.com/product/e-mapreduce).
