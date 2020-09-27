@@ -67,7 +67,7 @@
 -   [PutBucketWebsite](/cn.zh-CN/API 参考/关于Bucket的操作/静态网站（Website）/PutBucketWebsite.md)
 -   [PutBucketLifecycle](/cn.zh-CN/API 参考/关于Bucket的操作/生命周期（Lifecycle）/PutBucketLifecycle.md)
 -   [PutBucketReferer](/cn.zh-CN/API 参考/关于Bucket的操作/防盗链（Referer）/PutBucketReferer.md)
--   [PutBucketCORS](/cn.zh-CN/API 参考/关于Bucket的操作/跨域资源共享（Cors）/PutBucketCORS.md) |
+-   [PutBucketCORS](/cn.zh-CN/API 参考/关于Bucket的操作/跨域资源共享（Cors）/PutBucketCors.md) |
 |InvalidTargetBucketForLogging|Put bucket log requester is not target bucket owner.|存放Logging的目标Bucket不存在。|请更换有效的目标Bucket。|
 |InvalidPart|One or more of the specified parts could not be found or the specified entity tag might not have matched the part's entity tag.|PartNumber或ETag错误导致CompleteMultipartUpload提交的Part无效。|请参见[CompleteMultipartUpload](/cn.zh-CN/API 参考/关于Object操作/分片上传（MulitipartUpload）/CompleteMultipartUpload.md)进行排查。|
 |FilePartNotExist|The Part you read had been deleted.|CompleteMultipartUpload提交的分片被删除。|
