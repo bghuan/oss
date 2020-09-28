@@ -12,7 +12,7 @@ After you upload ZIP objects to a specified folder in OSS, Function Compute is t
 
 Take note of the following items when you decompress a ZIP package:
 
--   ZIP package decompression is available in all regions except China \(Heyuan\), China \(Chengdu\), Malaysia \(Kuala Lumpur\), UAE \(Dubai\), and UK \(London\).
+-   ZIP package decompression is available in all regions except China \(Heyuan\), China \(Chengdu\), China \(Hong Kong\), Malaysia \(Kuala Lumpur\), UAE \(Dubai\), and UK \(London\).
 -   If the package contains object names or folder names that are not UTF-8 or GB 2312 encoded, the object names or folder names after decompression may be garbled, or the decompression process may be interrupted. We recommend that you encode your object names or folder names in UTF-8 and GB 2312.
 -   ZIP objects whose storage types are Archive or Cold Archivecannot be decompressed if the objects are in the frozen state. Restore the Archive or Cold Archive objects before you decompress the objects.
 -   If decompression takes more than 10 minutes, the ZIP package fails to be decompressed.
