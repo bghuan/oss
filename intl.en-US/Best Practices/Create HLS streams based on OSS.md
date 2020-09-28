@@ -34,7 +34,7 @@ If you access an audio or video file embedded in a third-party website rather th
 
 For example, the address of a web server is http://118.xx.xx.xx:8080. You access the address through a browser to access a website in which a video file stored in a OSS bucket is embedded. In this case, the browser sends a request to OSS to access the video file stored in the bucket. However, the browser identifies that the endpoint of the bucket and the address of the web server \(http://118.xx.xx.xx:8080\) are in different origins and send a request to confirm whether the bucket allows cross-origin requests. By default, CORS is disabled for OSS buckets and all cross-origin requests are denied. Therefore, the video file embedded in the website cannot be played. The following figure shows how the cross-origin request is denied.
 
-![video](../images/p147443.png)
+![video](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/1216521061/p147443.png)
 
 You can enable CORS for the bucket that stores audio or video files to allow users to play the files on third-party websites.
 
@@ -127,7 +127,7 @@ print(signed_rtmp_url)
 
 When you access an object in a private bucket by using the object URL, you must add a signature in the URL. When you access an HLS stream, a request is sent first to dynamically access the m3u8 index file of the stream and multiple requests are sent to download the latest ts files based on the content of the index file. You must add a signature to the URL in each request.
 
-![video2](../images/p147482.png)
+![video2](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/1216521061/p147482.png)
 
 To simplify the signature process, OSS provides a dynamic signature method. You can add the `x-oss-process=hls/sign` header to the URL in the request that is sent to access the m3u8 index file. OSS signs all URLs used to play the ts files in the returned playlist in the same way as that is specified by the header.
 
