@@ -81,7 +81,6 @@ Upload to OSS
 |Cache-Control, Content-Type, Content-Disposition, Content-Encoding, Expires|字符串|可选|HTTP请求Header，详细信息请参见[PutObject](/cn.zh-CN/API 参考/关于Object操作/基础操作/PutObject.md)。 默认值：无
 
 Post操作提交表单编码必须为`multipart/form-data`，即Header中Content-Type为`multipart/form-data;boundary=xxxxxx` 这样的形式，boundary为边界字符串。 |
-|file|字符串|必选|文件或文本内容，必须是表单中的最后一个域。浏览器会自动根据文件类型来设置Content-Type，并覆盖用户的设置。OSS一次只能上传一个文件。 默认值：无 |
 |x-oss-content-type|字符串|可选|由于浏览器会自动在文件表单域中增加Content-Type，为了解决此问题，OSS支持用户在Post请求体中增加x-oss-content-type，该项允许用户指定Content-Type，且拥有最高优先级。优先级顺序：x-oss-content-type \> 文件表单域的Content-Type \> Content-Type
 
 默认值：无 |
@@ -114,6 +113,9 @@ Post操作提交表单编码必须为`multipart/form-data`，即Header中Content
 
 -   当目标Bucket的版本控制状态为“开启”或“暂停”时，x-oss-forbid-overwrite请求Header设置无效，即允许覆盖同名Object。
 -   设置x-oss-forbid-overwrite请求Header会导致QPS处理性能下降，如果您有大量的操作需要使用x-oss-forbid-overwrite请求Header（QPS \> 1000），请工单联系我们进行确认，避免影响您的业务。 |
+|file|字符串|必选|文件或文本内容。浏览器会自动根据文件类型来设置Content-Type，并覆盖用户的设置。OSS一次只能上传一个文件。 默认值：无
+
+**说明：** file必须是表单中的最后一个域。 |
 
 ## 响应Header
 
@@ -196,6 +198,7 @@ Post操作提交表单编码必须为`multipart/form-data`，即Header中Content
 |InvalidEncryptionAlgorithmError|400|如果上传时指定了x-oss-server-side-encryption Header请求域，则必须设置其值为AES256或KMS。若设置为其他值，将返回此错误。|
 |FileAlreadyExists|409|当请求的Header中携带x-oss-forbid-overwrite=true时，表示禁止覆盖同名文件。如果文件已存在，将返回此错误。|
 |KmsServiceNotEnabled|403|将x-oss-server-side-encryption指定为KMS，但没有预先购买KMS套件。|
+|FileImmutable|409|Bucket内的数据处于被保护状态时，若您尝试删除或修改这些数据，将返回此错误码。|
 
 ## 附录：Post Policy
 
