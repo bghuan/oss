@@ -28,8 +28,8 @@ PutObjectTagging接口用于设置或更新对象（Object）的标签（Tagging
 ```
 PUT /objectname?tagging
 Content‐Length: 114
-Host: bucketname.oss‐cn‐hangzhou.aliyuncs.com
-Date: GMT Date
+Host: BucketName.oss-cn-hangzhou.aliyuncs.com
+Date: Mon, 18 Mar 2019 08:25:17 GMT
 Authorization: SignatureValue
 <Tagging>
   <TagSet>
@@ -68,7 +68,7 @@ Authorization: SignatureValue
     ```
     PUT /objectname?tagging
     Content‐Length: 114
-    Host: bucketname.oss‐cn‐hangzhou.aliyuncs.com
+    Host: BucketName.oss-cn-hangzhou.aliyuncs.com
     Date: Mon, 18 Mar 2019 08:25:17 GMT
     Authorization: OSS ***********:*********************
     <Tagging>
@@ -102,7 +102,7 @@ Authorization: SignatureValue
     ```
     PUT /objectname?tagging&versionId=CAEQExiBgID.jImWlxciIDQ2ZjgwODIyNDk5MTRhNzBiYmQwYTZkMTYzZjM0****
     Content-Length: 90
-    Host: bucketname.oss-cn-hangzhou.aliyuncs.com
+    Host: BucketName.oss-cn-hangzhou.aliyuncs.com
     Date: Wed, 24 Jun 2020 08:58:15 GMT
     Authorization: OSS ************:********************
     <Tagging>
