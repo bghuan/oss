@@ -568,10 +568,10 @@ For example, to prohibit a RAM user from accessing objects that have the status:
                 "oss:GetObject"
             ],
             "Resource": [
-                "acs:oss:*:1746495857602745:examplebucket/testobject"
+                "acs:oss:*:1746495857602745:examplebucket/*"
             ],
             "Condition": {
-                "StringNotEquals": {
+                "StringEquals": {
                     "oss:ExistingObjectTag/status":"ok",
                     "oss:ExistingObjectTag/key1":"value1"
                 }
