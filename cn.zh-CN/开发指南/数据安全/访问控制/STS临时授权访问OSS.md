@@ -53,7 +53,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
     4.  填写**策略名称**和**备注**。
     5.  配置模式选择**可视化配置**或**脚本配置**。
 
-        以脚本配置为例，为ram-test添加ListObjects、PutObiect、GetObject等权限，在**策略内容**中配置脚本示例如下：
+        以脚本配置为例，为ram-test添加ListObjects、PutObject、GetObject等权限，在**策略内容**中配置脚本示例如下：
 
         ```
         {
@@ -63,7 +63,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
                    "Effect": "Allow",
                    "Action": [
                      "oss:ListObjects",
-                     "oss:PutObiect",
+                     "oss:PutObject",
                      "oss:GetObject"
                    ],
                    "Resource": [
