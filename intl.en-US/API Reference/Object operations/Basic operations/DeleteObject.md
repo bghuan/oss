@@ -1,0 +1,169 @@
+# DeleteObject
+
+You can call this operation to delete an object.
+
+## Usage notes
+
+When you call the DeleteObject operation, take note of the following items:
+
+-   You must have write permissions on the object to be deleted.
+-   HTTP status code 204 is returned when the DeleteObject operation succeeds, regardless of whether the object exists.
+-   If the object you want to delete is a symbolic link, the DeleteObject operation deletes only the symbolic link but not the content that the link directs to.
+
+## Versioning
+
+When you call DeleteObject to delete an object from a versioned bucket, you must determine whether to specify a version ID in the request.
+
+-   Do not specify a version ID \(temporary deletion\)
+
+    By default, if you do not specify a version ID in a DeleteObject request, OSS does not delete the current version of the object but add a delete marker to the object as the new current version. If you perform the GetObject operation on the object, OSS identifies that the current version of the object is a delete marker, and then returns `404 Not Found`. Additionally, the `x-oss-delete-marker` header and the `x-oss-version-id` header that indicates the version ID of the created delete marker are included in the response to the DeleteObject request.
+
+    The value of the `x-oss-delete-marker` header in the response is true, which indicates that the `x-oss-version-id` is the version ID of a delete marker.
+
+-   Specify a version ID \(permanently deletion\)
+
+    If you specify a version ID in a DeleteObject request, OSS permanently deletes the version whose ID is specified by the `versionId` field in the `params` parameter. To delete a version whose ID is null, add `params['versionId'] = "null"` in `params` in the request. OSS identifies the string "null" as the ID of the version to delete, and deletes the version whose ID is null.
+
+
+## Response headers
+
+|Header|Type|Description|
+|:-----|:---|:----------|
+|x-oss-delete-marker|bool|-   If you do not specify a version ID when you perform the DeleteObject operation, OSS creates a delete marker as the current version and includes this header with the "true" value in the response.
+-   If you specify a version ID to permanently delete a version of the object and the specified version is a delete marker, OSS includes this header with the "true" value in the response.
+
+Valid value: true|
+|x-oss-version-id|String|-   If you do not specify a version ID when you perform the DeleteObject operation, OSS creates a delete marker as the current version and includes this header in the response to indicate the version ID of the created delete marker.
+-   If you specify an object version ID to permanently delete a version of the object, OSS includes this header in the response to indicate the ID of the deleted version. |
+
+## Request structure
+
+```
+DELETE /ObjectName HTTP/1.1
+Host: BucketName.oss-cn-hangzhou.aliyuncs.com
+Date: GMT Date
+Authorization: SignatureValue
+```
+
+## Examples
+
+-   Sample request
+
+    ```
+    DELETE /AK.txt HTTP/1.1
+    Host: test.oss-cn-zhangjiakou.aliyuncs.com
+    Accept-Encoding: identity
+    User-Agent: aliyun-sdk-python/2.6.0(Windows/7/AMD64;3.7.0)
+    Accept: */*
+    Connection: keep-alive
+    date: Wed, 02 Jan 2019 13:28:38 GMT
+    authorization: OSS qn6qrrqxo2oawuk53otfjbyc:zUglwRPGkbByZxm1+y4eyu+NIUs=zV0****
+    Content-Length: 0
+    ```
+
+    Sample response
+
+    ```
+    HTTP/1.1 204 No Content
+    Server: AliyunOSS
+    Date: Wed, 02 Jan 2019 13:28:38 GMT
+    Content-Length: 0
+    Connection: keep-alive
+    x-oss-request-id: 5C2CBC8653718B5511EF4535
+    x-oss-server-time: 134
+    ```
+
+-   Sample request in which the version ID is not specified
+
+    In this case, OSS adds a delete marker to the object and includes the x-oss-delete-marker=true header in the response.
+
+    ```
+    DELETE /example HTTP/1.1
+    Host: versioning-delete.oss-cn-hangzhou.aliyuncs.com
+    Date: Tue, 09 Apr 2019 04:08:23 GMT
+    Authorization: OSS twnetzwjkqr9eq6:z73SSKA6t2tNTP4GuPjPiyV/****
+    ```
+
+    Sample response
+
+    ```
+    HTTP/1.1 204 NoContent
+    x-oss-delete-marker: true
+    x-oss-version-id: CAEQMxiBgIDh3ZCB0BYiIGE4YjIyMjExZDhhYjQxNzZiNGUyZTI4ZjljZDcz****
+    x-oss-request-id: 5CAC1AB7B7AEADE01700****
+    Date: Tue, 09 Apr 2019 04:08:23 GMT
+    Connection: keep-alive
+    Server: AliyunOSS
+    ```
+
+-   Sample request in which the version ID is specified
+
+    In this case, the version with the specified version ID is permanently deleted.
+
+    ```
+    DELETE /example? versionId=CAEQOBiBgIDNlJeB0BYiIDAwYjJlNDQ4YjJkMzQxMmY5NTM5N2UzZWNiZTQ2**** HTTP/1.1
+    Host: versioning-delete.oss-cn-hangzhou.aliyuncs.com
+    Date: Tue, 09 Apr 2019 04:11:54 GMT
+    Authorization: OSS gb3m2qiwirupd6v:UjOXBmIbJD3qXL+DP1EDNyCI****
+    ```
+
+    Sample response
+
+    ```
+    HTTP/1.1 204 No Content
+    x-oss-version-id: CAEQOBiBgIDNlJeB0BYiIDAwYjJlNDQ4YjJkMzQxMmY5NTM5N2UzZWNiZTQ2****
+    x-oss-request-id: 5CAC1B8AB7AEADE01700****
+    Date: Tue, 09 Apr 2019 04:11:54 GMT
+    Content-Length: 0
+    Connection: keep-alive
+    Server: AliyunOSS
+    ```
+
+-   Sample request in which the version ID of a delete marker is specified
+
+    **Note:** You can delete only delete markers.
+
+    In the following example, the specified version is a delete marker. The x-oss-delete-marker=true field is included in the response.
+
+    ```
+    DELETE /example? versionId=CAEQOBiBgIDNlJeB0BYiIDAwYjJlNDQ4YjJkMzQxMmY5NTM5N2UzZWNiZTQ2**** HTTP/1.1
+    Host: versioning-delete.oss-cn-hangzhou.aliyuncs.com
+    Date: Tue, 09 Apr 2019 04:16:25 GMT
+    Authorization: OSS jh475i54ffozhoy:4tX6Z+fnhtINhp0g+sRiLEQb****
+    ```
+
+    Sample response
+
+    ```
+    HTTP/1.1 204 No Content
+    x-oss-delete-marker: true
+    x-oss-version-id: CAEQNhiBgIDFtp.B0BYiIDk4NzgwMmU4NDMyOTQyM2NiMDQxOTcxYWNhMjc1****
+    x-oss-request-id: 5CAC1C99B7AEADE01700****
+    Date: Tue, 09 Apr 2019 04:16:25 GMT
+    Content-Length: 0
+    Connection: keep-alive
+    Server: AliyunOSS
+    ```
+
+
+## SDKs
+
+You can use OSS SDKs for the following programming languages to call DeleteObject:
+
+-   [Java](/intl.en-US/SDK Reference/Java/Manage objects/Delete objects.md)
+-   [Python](/intl.en-US/SDK Reference/Python/Manage objects/Delete objects.md)
+-   [PHP](/intl.en-US/SDK Reference/PHP/Manage objects/Delete objects.md)
+-   [Go](/intl.en-US/SDK Reference/Go/Manage objects/Delete objects.md)
+-   [C](/intl.en-US/SDK Reference/C/Manage objects/Delete objects.md)
+-   [.NET](/intl.en-US/SDK Reference/. NET/Manage objects/Delete objects.md)
+-   [Android](/intl.en-US/SDK Reference/Android/Manage objects/Delete an object.md)
+-   [iOS](/intl.en-US/SDK Reference/iOS/Manage objects/Delete objects.md)
+-   [Node.js](/intl.en-US/SDK Reference/Node. js/Manage objects/Delete objects.md)
+-   [Browser.js](/intl.en-US/SDK Reference/Browser.js/Manage objects.md)
+
+## Errors codes
+
+|Error code|HTTP status code|Description|
+|----------|----------------|-----------|
+|FileImmutable|409|The error message returned because the data that you attempt to delete or modify is protected by a retention policy.|
+
