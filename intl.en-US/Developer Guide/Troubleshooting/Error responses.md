@@ -67,7 +67,7 @@ For more information about OSS error codes, see [OSS error center](https://error
 -   [PutBucketWebsite](/intl.en-US/API Reference/Bucket operations/Static websites/PutBucketWebsite.md)
 -   [PutBucketLifecycle](/intl.en-US/API Reference/Bucket operations/Lifecycle/PutBucketLifecycle.md)
 -   [PutBucketReferer](/intl.en-US/API Reference/Bucket operations/Hotlink protection/PutBucketReferer.md)
--   [PutBucketCORS](/intl.en-US/API Reference/Bucket operations/CORS/PutBucketcors.md) |
+-   [PutBucketCORS](/intl.en-US/API Reference/Bucket operations/CORS/PutBucketCors.md) |
 |InvalidTargetBucketForLogging|Put bucket log requester is not target bucket owner.|The error message returned because the destination bucket specified to store logs does not exist.|Specify a valid destination bucket.|
 |InvalidPart|One or more of the specified parts could not be found or the specified entity tag might not have matched the part's entity tag.|The error message returned because a part uploaded by CompleteMultipartUpload is invalid due to invalid PartNumber or ETag.|For more information about troubleshooting, see [CompleteMultipartUpload](/intl.en-US/API Reference/Object operations/Multipart upload/CompleteMultipartUpload.md).|
 |FilePartNotExist|The Part you read had been deleted.|The error message returned because a part submitted by CompleteMultipartUpload is deleted.|
@@ -183,7 +183,7 @@ For more information about the common errors that you may encounter when you use
 
 -   SDK for Java: [FAQ](/intl.en-US/SDK Reference/Java/FAQ.md)
 -   SDK for Node.js: [FAQ](/intl.en-US/SDK Reference/Node. js/FAQ.md)
--   [ossutil](https://help.aliyun.com/document_detail/101135.html)
+-   [ossutil](/intl.en-US/Tools/ossutil/FAQ.md)
 -   [ossfs](/intl.en-US/Tools/ossfs/FAQ.md)
 -   [ossftp](/intl.en-US/Tools/ossftp/FAQ.md)
 
