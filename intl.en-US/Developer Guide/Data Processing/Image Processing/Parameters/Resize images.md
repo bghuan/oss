@@ -28,42 +28,6 @@ For more information, see the example below the table.|
     -   0: resizes based on the specified parameter. Default value: 1. Default value: 1. |
     |color|Yes \(only when `m is pad`\)|When you set the resize type to pad, you can select a color to fill the empty space.|The color values in the format of RGB. For example, 000000 indicates black, and FFFFFF indicates white. Default value: FFFFFF \(white\). |
 
-    Example: the size of the source image is 200 × 100 pixels.The w resize parameter is set to 150 pixels, and the h resize parameter is set to 80 pixels. Thumbnails based on different resize types:
-
-    -   lfit
-
-        -   Proportional resizing: the w/h of the source image must be equal to that of the thumbnail. Therefore, if w is 150 pixels, h is 75 pixels. If h is 80 pixels, w is 160 pixels.
-        -   Maximum image within a rectangle based on the specified width and height: The value of w\*h of the thumbnail cannot exceed 150 × 80 pixels.
-        The thumbnail size is 150 × 75 pixels based on the preceding conditions.
-
-        ![lfit](../images/p137017.png)
-
-    -   mfit
-
-        -   Proportional resizing: the w/h of the source image must be equal to that of the thumbnail. Therefore, if w is 150 pixels, h is 75 pixels. If h is 80 pixels, w is 160 pixels.
-        -   Minimum image beyond a rectangle based on the specified width and height: the thumbnail must be a minimum rectangle whose size is greater than 150 × 80 pixels.
-        The thumbnail size is 160 × 80 pixels based on the preceding conditions.
-
-        ![mfit](../images/p137027.png)
-
-    -   fill
-
-        The fill parameter resizes the source image proportionally as small as possible beyond a rectangle, and crops the source image based on the specified width and height. The source image is resized to 160 × 80 pixels, and w is centered and cropped to 150 pixels to obtain a thumbnail of 150 × 80 pixels.
-
-        ![fill](../images/p137049.png)
-
-    -   pad
-
-        The pad parameter resizes the source image based on the specified width and height, and fills the empty space. The source image is resized to 150 × 75 pixels, and h is centered and filled to 80 pixels to obtain a thumbnail of 150 × 80 pixels.
-
-        ![pad](../images/p137053.png)
-
-    -   fixed
-
-        The fixed parameter resizes the image based on the specified width and height. If the width and height ratio of the image is different from that of the source image, the image is deformed.
-
-        ![fixed](../images/p137056.png)
-
 -   Resize proportionally
 
     |Parameter|Required|Description|Valid value|
