@@ -67,7 +67,7 @@
 -   [PutBucketWebsite](/intl.zh-CN/API 参考/关于Bucket的操作/静态网站（Website）/PutBucketWebsite.md)
 -   [PutBucketLifecycle](/intl.zh-CN/API 参考/关于Bucket的操作/生命周期（Lifecycle）/PutBucketLifecycle.md)
 -   [PutBucketReferer](/intl.zh-CN/API 参考/关于Bucket的操作/防盗链（Referer）/PutBucketReferer.md)
--   [PutBucketCORS](/intl.zh-CN/API 参考/关于Bucket的操作/跨域资源共享（Cors）/PutBucketcors.md) |
+-   [PutBucketCORS](/intl.zh-CN/API 参考/关于Bucket的操作/跨域资源共享（Cors）/PutBucketCors.md) |
 |InvalidTargetBucketForLogging|Put bucket log requester is not target bucket owner.|存放Logging的目标Bucket不存在。|请更换有效的目标Bucket。|
 |InvalidPart|One or more of the specified parts could not be found or the specified entity tag might not have matched the part's entity tag.|PartNumber或ETag错误导致CompleteMultipartUpload提交的Part无效。|请参见[CompleteMultipartUpload](/intl.zh-CN/API 参考/关于Object操作/分片上传（MulitipartUpload）/CompleteMultipartUpload.md)进行排查。|
 |FilePartNotExist|The Part you read had been deleted.|CompleteMultipartUpload提交的分片被删除。|
@@ -183,7 +183,7 @@ SDK、工具类常见错误及排查
 
 -   Java SDK：[常见问题](/intl.zh-CN/SDK 示例/Java/常见问题.md)
 -   Node.js SDK：[常见问题](/intl.zh-CN/SDK 示例/Node.js/常见问题.md)
--   [ossutil](https://help.aliyun.com/document_detail/101135.html)
+-   [ossutil](/intl.zh-CN/常用工具/命令行工具ossutil/常见问题.md)
 -   [ossfs](/intl.zh-CN/常用工具/ossfs/常见问题.md)
 -   [ossftp](/intl.zh-CN/常用工具/ossftp/常见问题.md)
 
