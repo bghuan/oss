@@ -1,6 +1,6 @@
 # Blur
 
-This topic describes the parameters and examples to blur an image.
+You can use blur parameters to blur a source image stored in OSS. This topic describes the parameters and examples to blur an image.
 
 ## Parameters
 
@@ -15,16 +15,13 @@ The following table lists the parameters.
 
 ## Examples
 
--   Set the radius to 3 px and standard deviation to 2 px.
+The image-demo bucket that is located in the China \(Hangzhou\) region is used as an example. Public endpoint of the image:
 
-    The URL used to process the image is in the following format: `<Source image URL>? x-oss-process=image/blur,r_3,s_2`
+[https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg](https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg)
 
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/9856348951/p2526.jpg)
+![Source image ](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/8812863061/p139183.png)
 
--   Scale down an image to 200 px in width. Blur it by setting the radius to 3 px and standard deviation to 2 px.
+Set the radius to 3 pixels and standard deviation to 2 pixels. The URL used to process the image is in the following format: [https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=image/blur,r\_3,s\_2](https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=image/blur,r_3,s_2)
 
-    The URL used to process the image is in the following format: `<Source image URL>? x-oss-process=image/resize,w_200/blur,r_3,s_2`
-
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/9856348951/p2527.jpg)
-
+![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/9856348951/p2526.jpg)
 
