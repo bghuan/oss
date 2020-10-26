@@ -20,7 +20,7 @@ An image in the bucket named image-dem in the China \(Hangzhou\) region is used 
 
 [https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg](https://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg)
 
-![Source image ](../images/p139183.png)
+![Source image ](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/8812863061/p139183.png)
 
 -   Increase the brightness of the image by 50 percent
 
