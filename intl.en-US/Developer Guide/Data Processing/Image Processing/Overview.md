@@ -8,13 +8,12 @@ OSS allows you to directly use one or more parameters to process images, or enca
 
 |IMG|Parameter|Description|
 |---|---------|-----------|
-|[t1631218.md\#]()|format|Converts images to the format that supports high compression ratios such as HEIF or WebP \(M6\).|
 |[Resize images](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Resize images.md)|resize|Resizes images to a specified size.|
 |[Incircle](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Incircle.md)|circle|Crops images based on the center point of images to ellipses of the specified size.|
 |[Custom crop](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Custom crop.md)|crop|Crops rectangular images of the specified size.|
 |[Indexed cut](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Indexed cut.md)|indexcrop|Cuts images along the specified horizontal or vertical axis and selects one of the images.|
 |[Rounded rectangle](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Rounded rectangle.md)|rounded-corners|Crops images to rounded rectangles based on the specified rounded corner size.|
-|[Adaptive orientation](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Adaptive orientation.md)|auto-orient|Auto-rotates images that include the auto-orient parameter.|
+|[Automatic rotation](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Automatic rotation.md)|auto-orient|Auto-rotates images that include the auto-orient parameter.|
 |[Rotate](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Rotate.md)|rotate|Rotates images clockwise based on the specified angle.|
 |[Blur](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Blur.md)|blur|Blurs images.|
 |[Brightness](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Brightness.md)|bright|Adjusts the brightness of images.|
@@ -24,14 +23,14 @@ OSS allows you to directly use one or more parameters to process images, or enca
 |[Quality transformation](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Quality transformation.md)|quality|Adjusts the quality of images in the JPG and WebP formats.|
 |[Format conversion](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Format conversion.md)|format|Converts image formats.|
 |[Add watermarks](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Add watermarks.md)|watermark|Adds image or text watermarks to images.|
-|[Query average colors](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Retrieve dominant image tones.md)|average-hue|Queries the average tone.|
-|[Query information](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Query information.md)|info|Queries image information, including basic information and EXIF information.|
+|[Query the average tone](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Query the average tone.md)|average-hue|Queries the average tone.|
+|[Query image information](/intl.en-US/Developer Guide/Data Processing/Image Processing/Parameters/Query image information.md)|info|Queries image information, including basic information and EXIF information.|
 
 We recommend that you use image style to process multiple images at a time. For more information, see [Image style](/intl.en-US/Developer Guide/Data Processing/Image Processing/Image style.md).
 
 ## Implementation modes
 
-You can use object URLs, APIs, and SDKs to process images. For more information, see [IMG user guide](/intl.en-US/Developer Guide/Data Processing/Image Processing/IMG user guide.md).
+You can use object URLs, APIs, and SDKs to process images. For more information, see [IMG implementation modes](/intl.en-US/Developer Guide/Data Processing/Image Processing/IMG implementation modes.md).
 
 ## Usage notes
 
