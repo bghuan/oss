@@ -4,7 +4,7 @@ You can call this operation to query information about all objects in a bucket.
 
 **Note:**
 
--   The GetBucket \(ListObjects\) operation has been updated to GetBucketV2 \(ListObjectsV2\). We recommend that you use GetBucketV2 \(ListObjectsV2\) when you develop your applications. To provide backward compatibility, OSS continues to support the GetBucket \(ListObjects\) operation. For more information about GetBucketV2 \(ListObjectsV2\), see [GetBucketV2 \(ListObjectsV2\)]().
+-   The GetBucket \(ListObjects\) operation has been updated to GetBucketV2 \(ListObjectsV2\). We recommend that you use GetBucketV2 \(ListObjectsV2\) when you develop your applications. To provide backward compatibility, OSS continues to support the GetBucket \(ListObjects\) operation. For more information about GetBucketV2 \(ListObjectsV2\), see [GetBucketV2 \(ListObjectsV2\)](/intl.en-US/API Reference/Bucket operations/Basic operations/GetBucketV2 (ListObjectsV2).md).
 -   The user metadata is not returned for the GetBucket \(ListObjects\) request.
 
 ## Request syntax
