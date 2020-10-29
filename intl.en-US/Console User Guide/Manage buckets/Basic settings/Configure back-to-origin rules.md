@@ -27,7 +27,7 @@ You can configure up to 20 back-to-origin rules, which are run in a sequence tha
 
 4.  Click **Configure**. Click **Create Rule**.
 
-5.  In the **Create Rule** dialog box, configure a back-to-origin rule.
+5.  In the **Create Rule** pane, configure a back-to-origin rule.
 
     |Parameter|Required|Description|
     |:--------|:-------|:----------|
@@ -36,18 +36,21 @@ You can configure up to 20 back-to-origin rules, which are run in a sequence tha
     -   **File Name Prefix**: The back-to-origin rule is triggered when the name of the requested object contains the specified prefix. For example, when this parameter is set to abc/, the back-to-origin rule is triggered when you access `https://bucketname.oss-endpoint.com/abc/image.jpg`.
     -   **File Name Suffix**: The back-to-origin rule is triggered when the name of the requested object contains the specified suffix. For example, when this parameter is set to .jpg, the back-to-origin rule is triggered when you access `https://bucketname.oss-endpoint.com/image.jpg`.
 **Note:** File Name Prefix and File Name Suffix are optional when you configure only one back-to-origin rule. When you configure multiple back-to-origin rules, you must differentiate the rules by specifying a different prefix or suffix for each of them. |
-    |**Replace or Delete File Prefix**|No|You can configure this parameter after you select and configure **File Name Prefix**. When OSS sends a request to the origin, the content of **File Name Prefix** is replaced with that of **Replace or Delete File Prefix**. Example: You want to store the object obtained from the origin in the Mirror folder under the root folder of the bucket. If the name of the requested object is path/test/photo.jpg, set **File Name Prefix** to mirror/, **Replace or Delete File Prefix** to test/, and the third column of **Origin URL** to path. In this case, when you access `bucketname.oss-endpoint.com/mirror/photo.jpg`, if photo.jpg does not exist, OSS sends the `https://origin URL/path/test/photo.jpg` request to obtain this object. If the object is obtained from the origin, OSS stores this object in the mirror/ folder and returns the object to you. |
+    |**Replace or Delete File Prefix**|No|You can configure this parameter after you select and configure **File Name Prefix**. When OSS sends a request to the origin, the content of **File Name Prefix** is replaced with that of **Replace or Delete File Prefix**. Example: You want to store the object obtained from the origin in the mirror folder under the root folder of the bucket. If the name of the requested object is path/test/photo.jpg, set **File Name Prefix** to mirror/, **Replace or Delete File Prefix** to test/, and the third column of **Origin URL** to path. In this case, when you access `https://bucketname.oss-endpoint.com/mirror/photo.jpg`, if photo.jpg does not exist, OSS sends the `https://origin URL/path/test/photo.jpg` request to obtain this object. If the object is obtained from the origin, OSS stores this object in the mirror/ folder and returns the object to you. |
     |**Origin URL**|Yes|Configure the information about the origin URL.     -   First column: Select HTTP or HTTPS based on the protocol used by the origin.
-    -   Second column: Enter the domain name or IP address of the origin. Internal domain names and IP addresses are not supported. If you enter an IP address, ensure that the origin corresponding to the IP address can be accessed by using the IP address.
-    -   Third column: Enter the folder where the requested object is stored. Subfolders in a folder must be separated with forward slashes \(/\). Example: `abc/123`. |
+
+**Note:** If SNI is enabled on the origin, HTTPS that you select does not take effect.
+
+    -   Second column: Enter the domain name or IP address of the origin. Internal endpoints and IP addresses are not supported. If you enter an IP address, ensure that the origin corresponding to the IP address can be accessed by using the IP address.
+    -   Third column: Enter the folder where the requested object is stored. Separate subfolders in a folder with forward slashes \(/\). Example: `abc/123`. |
     |**MD5 Verification**|No|If this option is selected, the MD5 hash of the object obtained from the origin is checked. When the response contains the Content-MD5 header value, OSS checks whether the MD5 hash of the object matches the Content-MD5 header value.     -   If the MD5 hash of the object matches the Content-MD5 header value, the client obtains the object, and OSS saves the object by using mirroring-based back-to-origin.
     -   If the MD5 hash of the object does not match the Content-MD5 header value, OSS calculates the Content-MD5 header value of the object based on the data integrity and does not save the object. However, the client can obtain the object because the object is returned to the client. |
-    |**Keep Forward Slash in Origin URL**|No|OSS does not support object names that start with a forward slash \(/\). Therefore, when the name of the requested object starts with a forward slash \(/\), you must select this option to obtain the requested object based on the back-to-origin rules.Example: The origin is `https://www.example.com`, the name of the requested object is /object.txt, and the name of the bucket in the China \(Hangzhou\) region is examplebucket. If this option is selected, the default public endpoint to access the requested object is `https://examplebucket.oss-cn-hangzhou.aliyuncs.com//object.txt`, and the origin URL is `https://www.example.com//object.txt`. The object is obtained from OSS, returned to the client, and saved in the bucket as object.txt.
+    |**Keep Forward Slash in Origin URL**|No|OSS does not support object names that start with a forward slash \(/\). Therefore, when the name of the requested object starts with a forward slash \(/\), you must select this option to obtain the requested object based on the back-to-origin rules.For example, the origin is `https://www.example.com`, the name of the requested object is /object.txt, and the name of the bucket in the China \(Hangzhou\) region is examplebucket. If this option is selected, the default public endpoint to access the requested object is `https://examplebucket.oss-cn-hangzhou.aliyuncs.com//object.txt`, and the origin URL is `https://www.example.com//object.txt`. The object is obtained from OSS, returned to the client, and saved in the bucket as object.txt.
 
-**Note:** This function is in public review in the US \(Silicon Valley\), US \(Virginia\), and China \(Hangzhou\) regions. You can [submit a ticket](https://workorder-intl.console.aliyun.com/#/ticket/createIndex) to apply for trial. |
+**Note:** This feature is in public preview in the US \(Silicon Valley\), US \(Virginia\), and China \(Hangzhou\) regions.You can [submit a ticket](https://workorder-intl.console.aliyun.com/#/ticket/createIndex) to apply for trial. |
     |**Other Parameter**|No|If this option is selected, the query string included in the request to OSS is transferred to the origin.|
-    |**3xx Response**|No|If this option is selected, OSS follows the origin to redirect request to obtain the resource and stores the resource in buckets. If this option is not selected, OSS passes the 3xx response without obtaining the resource.|
-    |**Set Transmission Rule of HTTP Header**|No|You can configure the transmission rule for HTTP headers to customize transmission actions, such as passthrough, filtering, or modification. For more information, see the following examples of transmission rule configurations for HTTP headers.|
+    |**3xx Response**|No|If this option is selected, OSS follows the origin to direct the request to obtain the resource and stores the resource in buckets. If this option is not selected, OSS passes the 3xx response without obtaining the resource.|
+    |**Set Transmission Rule of HTTP Header**|No|You can configure the transmission rule for HTTP headers to customize transmission actions such as passthrough, filtering, or modification. For more information, see the following examples of transmission rule configurations for HTTP headers.|
 
     Examples of transmission rule configurations for HTTP headers:
 
@@ -116,14 +119,14 @@ You can configure up to 20 back-to-origin rules, which are run in a sequence tha
 
         -   **Add Prefix or Suffix**: Add a prefix or suffix to the redirected URL. The prefix is configured in the third column. The suffix is configured in the fourth column.
 
-You can select this option to configure correct information for the redirected URL when the URL of the requested data does not include a prefix or suffix. If you set the prefix to 123/ and the suffix to .jpg, access to `https://bucketname.oss-endpoint.com/image` is automatically redirected to `https://Origin URL/123/image.jpg`.
+You can select this option to configure correct information for the redirected URL when the URL of the requested data excludes a prefix or suffix. If you set the prefix to 123/ and the suffix to .jpg, access to `https://bucketname.oss-endpoint.com/image` is automatically redirected to `https://Origin URL/123/image.jpg`.
 
         -   **Redirect to Fixed URL**: Access to the requested object is redirected to a specified object. The object address is specified in the third column. Example: `abc/myphoto.jpg`.
 
 **Note:** You can also set a website URL. For example, if you set the URL to `https://www.aliyun.com/index.html`, access to the bucket is redirected to the Alibaba Cloud homepage.
 
         -   **Replace File Name Prefix**: If you set this parameter and **File Name Prefix** for Prerequisite, the prefix in the name of the object to which the access is redirected is replaced with that of the third column. If you set this parameter without setting **File Name Prefix** for Prerequisite, the specified prefix is added to the name of the object to which the access is redirected.
-Subfolders in a folder must be separated with forward slashes \(/\). The folder name must end with a forward slash \(/\). The folder name cannot contain asterisks \(\*\). |
+Separate subfolders in a folder with forward slashes \(/\). The folder name must end with a forward slash \(/\). The folder name cannot contain asterisks \(\*\). |
     |**Other Parameter**|No|If this option is selected, the query string included in the request to OSS is transferred to the origin.|
     |**Redirection Code**|Yes|You can select the redirection code from the drop-down list. Select **Source from Alibaba Cloud CDN** if the redirect request is from Alibaba Cloud CDN.|
 
