@@ -4,7 +4,7 @@ GetBucket \(ListObjects\)接口用于列举存储空间（Bucket）中所有文�
 
 **说明：**
 
--   GetBucket \(ListObjects\)接口已修订为GetBucketV2 \(ListObjectsV2\)。建议您在开发应用程序时使用较新的版本GetBucketV2 \(ListObjectsV2\)。为保证向后兼容性，OSS继续支持GetBucket \(ListObjects\)。有关GetBucketV2 \(ListObjectsV2\)的详情，请参见[GetBucketV2 \(ListObjectsV2\)]()。
+-   GetBucket \(ListObjects\)接口已修订为GetBucketV2 \(ListObjectsV2\)。建议您在开发应用程序时使用较新的版本GetBucketV2 \(ListObjectsV2\)。为保证向后兼容性，OSS继续支持GetBucket \(ListObjects\)。有关GetBucketV2 \(ListObjectsV2\)的详情，请参见[GetBucketV2 \(ListObjectsV2\)](/cn.zh-CN/API 参考/关于Bucket的操作/基础操作/GetBucketV2 (ListObjectsV2).md)。
 -   执行GetBucket \(ListObjects\)请求时不会返回Object中自定义的元信息。
 
 ## 请求语法
