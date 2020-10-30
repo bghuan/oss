@@ -42,7 +42,7 @@ CRR supports the synchronization between buckets that have different names. If t
 
 -   Real-time data synchronization
 
-    This capability monitors data addition, deletion, and modification in real time and synchronizes these changes to the destination bucket. Data in an object up to 2 MB in size is synchronized within 10 minutes to ensure data consistency between the source and the destination buckets.
+    This capability monitors data addition, deletion, and modification in real time and synchronizes these changes to the destination bucket. Data in an object up to 2 MB in size is synchronized within minutes to ensure data consistency between the source and the destination buckets.
 
 -   Historical data migration
 
