@@ -16,7 +16,7 @@ Video data is constantly generated in real time. Therefore, this feature is unsu
 
 To simplify development and reduce costs in such scenarios, OSS allows you to use append upload to append content directly to the end of an object. Objects uploaded by using this method are append objects, whereas objects uploaded by using other methods are normal objects. The appended data can be read immediately after the upload.
 
-By using append upload, the architecture becomes simple in the preceding scenarios. When video data is generated, it is immediately added to the same object by using append upload. The client needs only to regularly retrieve the object length and compare compare the length with the previous value. If new readable data is found, the client starts a read operation to retrieve the newly uploaded data. This method greatly simplifies the architecture and enhances the scalability.
+By using append upload, the architecture becomes simple in the preceding scenarios. When video data is generated, it is immediately added to the same object by using append upload. The client needs only to regularly retrieve the object length and compare the length with the previous value. If new readable data is found, the client starts a read operation to retrieve the newly uploaded data. This method greatly simplifies the architecture and enhances the scalability.
 
 In addition to video scenarios, append upload can be used to append log data.
 
@@ -52,7 +52,7 @@ To authorize third-party users to upload objects, OSS also provides account-base
 
 ## What to do next
 
--   Images can be processed after they are uploaded. For more information, see [IMG user guide](/intl.en-US/Developer Guide/Data Processing/Image Processing/IMG user guide.md).
+-   Images can be processed after they are uploaded. For more information, see [IMG user guide](/intl.en-US/Developer Guide/Data Processing/Image Processing/IMG implementation modes.md).
 -   Audio or video objects can be processed after they are uploaded. For more information, see the "Media Processing" section in [Cloud data processing](/intl.en-US/Developer Guide/Cloud data processing.md).
 
 **Note:** Append upload does not support upload callback.
