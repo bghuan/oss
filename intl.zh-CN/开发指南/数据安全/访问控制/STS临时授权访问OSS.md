@@ -53,7 +53,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
     4.  填写**策略名称**和**备注**。
     5.  配置模式选择**可视化配置**或**脚本配置**。
 
-        以脚本配置为例，对ram-test添加ListObjects与GetObject等只读权限，在**策略内容**中配置脚本示例如下：
+        以脚本配置为例，为ram-test添加ListObjects、PutObject、GetObject等权限，在**策略内容**中配置脚本示例如下：
 
         ```
         {
@@ -63,6 +63,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
                    "Effect": "Allow",
                    "Action": [
                      "oss:ListObjects",
+                     "oss:PutObject",
                      "oss:GetObject"
                    ],
                    "Resource": [
@@ -73,8 +74,6 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
             ]
         }
         ```
-
-        ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/zh-CN/4647559951/p35423.jpg)
 
         **说明：** 如需配置更细粒度的授权策略，请参见[基于RAM Policy的权限控制](/intl.zh-CN/开发指南/数据安全/访问控制/RAM Policy/基于RAM Policy的权限控制.md)。
 
@@ -94,7 +93,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
     8.  记录角色的**ARN**，即需要扮演角色的ID。
 4.  获取临时访问凭证STS AK与SecurityToken。
 
-    您可以通过调用STS服务接口[AssumeRole](/intl.zh-CN/API 参考（STS）/操作接口/AssumeRole.md) 或者使用[各语言STS SDK](/intl.zh-CN/SDK参考/SDK参考（STS）/STS SDK概览.md)来获取临时访问凭证。
+    您可以通过调用STS服务接口[AssumeRole](/intl.zh-CN/API参考/API 参考（STS）/操作接口/AssumeRole.md) 或者使用[各语言STS SDK](/intl.zh-CN/SDK参考/SDK参考（STS）/STS SDK概览.md)来获取临时访问凭证。
 
     以Java SDK为例：
 
@@ -159,7 +158,7 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
 
     参数说明如下：
 
-    -   endpoint：STS接入地址，例如sts.cn-hangzhou.aliyuncs.com。各地域的STS接入地址请参见[接入地址](/intl.zh-CN/API 参考（STS）/接入地址.md)。
+    -   endpoint：STS接入地址，例如sts.cn-hangzhou.aliyuncs.com。各地域的STS接入地址请参见[接入地址](/intl.zh-CN/API参考/API 参考（STS）/接入地址.md)。
     -   AccessKeyId、AccessKeySecret：步骤1中保存的访问密钥。
     -   RoleArn：步骤3中保存的角色ARN。
     -   RoleSessionName：用来标识临时访问凭证的名称，建议使用不同的应用程序用户来区分。
@@ -167,10 +166,10 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
 
         **说明：** 这里传入的Policy是用来限制扮演角色之后的临时访问凭证的权限。临时访问凭证最后获得的权限是角色的权限和这里传入的Policy的交集。扮演角色的时候传入Policy的原因是为了授权的灵活性，例如上传文件的时候可以根据不同的用户添加对于上传文件路径的限制等。
 
-    -   DurationSeconds：设置临时访问凭证的有效期，单位是s，最小值为900，最大值以当前角色设定的最大会话时间为准。详情请参见[设置角色最大会话时间](/intl.zh-CN/角色管理/设置角色最大会话时间.md)。
+    -   DurationSeconds：设置临时访问凭证的有效期，单位是秒，最小值为900，最大值以当前角色设定的最大会话时间为准。详情请参见[设置角色最大会话时间](/intl.zh-CN/角色管理/设置角色最大会话时间.md)。
 5.  通过临时访问凭证访问OSS。
 
-    以下是Java SDK的示例，其他示例请参见[Python](/intl.zh-CN/SDK 示例/Python/授权访问.md)、[PHP](/intl.zh-CN/SDK 示例/PHP/授权访问.md)、[Go](/intl.zh-CN/SDK 示例/Go/授权访问.md) SDK授权访问的“使用STS进行临时授权”一节。
+    以通过Java SDK上传本地文件到OSS为例，代码如下：
 
     ```
     // Endpoint以杭州为例，其它Region请按实际情况填写。
@@ -183,17 +182,39 @@ OSS可以通过阿里云STS（Security Token Service）进行临时授权访问�
     // 用户拿到STS临时凭证后，通过其中的安全令牌（SecurityToken）和临时访问密钥（AccessKeyId和AccessKeySecret）生成OSSClient。
     // 创建OSSClient实例。注意，这里使用到了上一步生成的临时访问凭证（STS访问凭证）。
     OSSClient ossClient = new OSSClient(endpoint, AccessKeyId, accessKeySecret, securityToken);
+    // 创建PutObjectRequest对象。
+    PutObjectRequest putObjectRequest = new PutObjectRequest("<yourBucketName>", "<yourObjectName>", new File("<yourLocalFile>"));
     
-    // OSS操作。
+    // 如果需要上传时设置存储类型与访问权限，请参考以下示例代码。
+    // ObjectMetadata metadata = new ObjectMetadata();
+    // metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
+    // metadata.setObjectAcl(CannedAccessControlList.Private);
+    // putObjectRequest.setMetadata(metadata);
+    
+    // 上传文件。
+    ossClient.putObject(putObjectRequest);
     
     // 关闭OSSClient。
     ossClient.shutdown();
     ```
 
+    更多语言的SDK示例请参见：
+
+    -   [Java SDK](/intl.zh-CN/SDK 示例/Java/授权访问.md)
+    -   [Python SDK](/intl.zh-CN/SDK 示例/Python/授权访问.md)
+    -   [Go SDK](/intl.zh-CN/SDK 示例/Go/授权访问.md)
+    -   [C++ SDK](/intl.zh-CN/SDK 示例/C++/授权访问.md)
+    -   [PHP SDK](/intl.zh-CN/SDK 示例/PHP/授权访问.md)
+    -   [C SDK](/intl.zh-CN/SDK 示例/C/授权访问.md)
+    -   [.NET SDK](/intl.zh-CN/SDK 示例/.NET/授权访问.md)
+    -   [Node.js SDK](/intl.zh-CN/SDK 示例/Node.js/授权访问.md)
+    -   [Browser.js SDK](/intl.zh-CN/SDK 示例/Browser.js/授权访问.md)
+    -   [Android SDK](/intl.zh-CN/SDK 示例/Android/授权访问.md)
+    -   [iOS SDK](/intl.zh-CN/SDK 示例/iOS/授权访问.md)
 
 ## 常见问题
 
 获取STS时出现NoSuchBucket报错如何处理？
 
-出现这种报错一般是STS的`endpoint`填写错误。请根据您的地域，填写正确的STS接入地址。各地域的STS接入地址请参见[接入地址](/intl.zh-CN/API 参考（STS）/接入地址.md)。
+出现这种报错一般是STS的`endpoint`填写错误。请根据您的地域，填写正确的STS接入地址。各地域的STS接入地址请参见[接入地址](/intl.zh-CN/API参考/API 参考（STS）/接入地址.md)。
 
