@@ -1,24 +1,29 @@
-# Introduction {#concept_dcn_tp1_kfb .concept}
+# Introduction
 
-Before using OSS SDK, you must:
+This topic describes OSS SDKs in mainstream programming languages.
 
--   Learn about and activate the Alibaba Cloud OSS service.
--   [Create an AccessKey](https://www.alibabacloud.com/help/doc-detail/53045.htm).
+## Prerequisites
 
-This topic lists the topics that describe how to install, develop, and troubleshoot OSS SDKs in the following mainstream languages and provide parameters and examples.
+-   For more information about how to activate OSS, see [Activate OSS](https://www.alibabacloud.com/product/oss).
+-   An AccessKey pair is created. For more information, see [Create an AccessKey pair]().
 
-|Language|Reference|
-|:-------|:--------|
-|Java|[Java SDK references](reseller.en-US/SDK Reference/Java/Preface.md#)|
-|Python|[Python SDK references](reseller.en-US/SDK Reference/Python/Preface.md#)|
-|Android|[Android SDK references](https://partners-intl.aliyun.com/help/doc-detail/64041.htm)|
-|iOS|[iOS SDK references](https://partners-intl.aliyun.com/help/doc-detail/32055.htm)|
-|.NET|[.NET SDK references](reseller.en-US/SDK Reference/. NET/Preface.md#)|
-|Node.js|[Node.js SDK references](https://partners-intl.aliyun.com/help/doc-detail/32068.htm)|
-|Browser.js|[Browser.js SDK references](https://partners-intl.aliyun.com/help/doc-detail/64041.htm)|
-|PHP|[PHP SDK references](reseller.en-US/SDK Reference/PHP/Preface.md#)|
-|C|[C SDK references](reseller.en-US/SDK Reference/C/Preface.md#)|
-|Ruby|[Ruby SDK references](https://partners-intl.aliyun.com/help/doc-detail/32114.htm)|
-|Go|[Go SDK references](reseller.en-US/SDK Reference/Go/Preface .md#)|
-|Media-C|[Media-C SDK references](https://partners-intl.aliyun.com/help/doc-detail/32159.htm)|
+## Sample code
+
+The following table describes the installation, operations, parameters, example code, and FAQ of OSS SDKs in mainstream programming languages.
+
+|Language|References|
+|:-------|:---------|
+|Java|[OSS SDK for Java](/intl.en-US/SDK Reference/Java/Preface.md)|
+|Python|[OSS SDK for Python](/intl.en-US/SDK Reference/Python/Preface.md)|
+|Go|[OSS SDK for Go](/intl.en-US/SDK Reference/Go/Preface.md)|
+|C++|[OSS SDK for C++](/intl.en-US/SDK Reference/C++/Preface.md)|
+|PHP|[OSS SDK for PHP](/intl.en-US/SDK Reference/PHP/Preface.md)|
+|C|[OSS SDK for C](/intl.en-US/SDK Reference/C/Preface.md)|
+|Android|[OSS SDK for Android](/intl.en-US/SDK Reference/Android/Preface.md)|
+|iOS|[OSS SDK for iOS](/intl.en-US/SDK Reference/iOS/Preface.md)|
+|.NET|[OSS SDK for .NET](/intl.en-US/SDK Reference/. NET/Preface.md)|
+|Node.js|[OSS SDK for Node.js](/intl.en-US/SDK Reference/Node. js/Installation.md)|
+|Browser.js|[OSS SDK for Browser.js](/intl.en-US/SDK Reference/Browser.js/Installation.md)|
+|Ruby|[OSS SDK for Ruby](/intl.en-US/SDK Reference/Ruby/Installation.md)|
+|React Native|[OSS SDK for React Native](https://github.com/aliyun/aliyun-oss-react-native)|
 
