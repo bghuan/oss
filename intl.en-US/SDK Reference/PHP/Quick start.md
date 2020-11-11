@@ -1,12 +1,12 @@
-# Quick start {#concept_32101_zh .concept}
+# Quick start
 
-This topic describes how to use OSS PHP SDK to perform routine operations such as bucket creation, object uploads, and object downloads.
+This topic describes how to use the OSS PHP SDK to perform routine operations, such as creating buckets, uploading objects, and downloading objects.
 
-## Create a bucket {#section_n4g_s44_kfb .section}
+## Create buckets
 
-Run the following code to create a bucket:
+The following code provides an example on how to create a bucket:
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -18,32 +18,32 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS, because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to https://ram.console.aliyun.com.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China (Hangzhou). Specify the actual endpoint based on your requirements.
+// This example uses the endpoint of the China (Hangzhou) region. Specify the actual endpoint based on your requirements.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// Bucket name
+// Specify the bucket name.
 $bucket = "<yourBucketName>";
 
 try {
-	$ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-	$ossClient->createBucket($bucket);
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    $ossClient->createBucket($bucket);
 } catch (OssException $e) {
-	print $e->getMessage();
+    print $e->getMessage();
 }
-
+            
 ```
 
-For more information about bucket naming rules, see naming conventions in [Basic concepts](../../../../../reseller.en-US/Developer Guide/Basic concepts.md#). For more information about how to create a bucket, see [Manage a bucket](reseller.en-US/SDK Reference/PHP/Bucket.md#).
+For more information about bucket naming rules, see naming conventions in [Basic concepts](/intl.en-US/Developer Guide/Terms.md). For more information about how to create a bucket, see [Manage a bucket](/intl.en-US/SDK Reference/PHP/Buckets/Create buckets.md).
 
-For more information about endpoints, see [Regions and endpoints](../../../../../reseller.en-US/Developer Guide/Endpoint/Regions and endpoints.md#).
+For more information about endpoints, see [Regions and endpoints](/intl.en-US/Developer Guide/Endpoint/Regions and endpoints.md).
 
-## Upload objects { .section}
+## Upload objects
 
-Run the following code to upload a file to OSS:
+The following code provides an example on how to upload an object:
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -55,33 +55,33 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS, because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to https://ram.console.aliyun.com.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China (Hangzhou). Specify the actual endpoint based on your requirements.
+// This example uses the endpoint of the China (Hangzhou) region. Specify the actual endpoint based on your requirements.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// Bucket name
+// Specify the bucket name.
 $bucket= " <yourBucketName>";
-// Object name
+// <yourObjectName> indicates the complete path of the object you want to upload to OSS, and must include the file extension of the object. For example, set <yourObjectName> to abc/efg/123.jpg.
 $object = " <yourObjectName>";
 $content = "Hi, OSS.";
 
 try {
-	$ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-	$ossClient->putObject($bucket, $object, $content);
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    $ossClient->putObject($bucket, $object, $content);
 } catch (OssException $e) {
-	print $e->getMessage();
+    print $e->getMessage();
 }
-
+            
 ```
 
-For more information, see [Upload objects](reseller.en-US/SDK Reference/PHP/Upload objects/Overview .md#).
+For more information about uploading objects, see [Upload objects](/intl.en-US/SDK Reference/PHP/Upload objects/Overview .md).
 
-## Download objects { .section}
+## Download objects
 
-Run the following code to download an object:
+The following code provides an example on how to download an object:
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -93,33 +93,33 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS, because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to https://ram.console.aliyun.com.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China (Hangzhou). Specify the actual endpoint based on your requirements.
+// This example uses the endpoint of the China (Hangzhou) region. Specify the actual endpoint based on your requirements.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// Bucket name
+// Specify the bucket name.
 $bucket= "<yourBucketName>";
-// Object name
+// <yourObjectName> indicates the complete path of the object you want to download from OSS, and must include the file extension of the object. For example, set <yourObjectName> to abc/efg/123.jpg.
 $object = "<yourObjectName>";
 
 try {
-	$ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-	$content = $ossClient->getObject($bucket, $object);
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    $content = $ossClient->getObject($bucket, $object);
     print("object content: " . $content);
 } catch (OssException $e) {
-	print $e->getMessage();
+    print $e->getMessage();
 }
-
+            
 ```
 
-For more information, see [Download objects](reseller.en-US/SDK Reference/PHP/Download objects/Overview.md#).
+For more information about downloading objects, see [Download objects](/intl.en-US/SDK Reference/PHP/Download objects/Overview.md).
 
-## List objects { .section}
+## List objects
 
-Run the following code to list objects in a specified bucket. You can list a maximum of 100 objects by default.
+The following code provides an example on how to list objects in a specified bucket. By default, up to 100 objects are listed.
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -131,37 +131,37 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS, because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to https://ram.console.aliyun.com.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China (Hangzhou). Specify the actual endpoint based on your requirements.
+// This example uses the endpoint of the China (Hangzhou) region. Specify the actual endpoint based on your requirements.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// Bucket name
+// Specify the bucket name.
 $bucket= "<yourBucketName>";
 
 try {
-	$ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-	
-	$listObjectInfo = $ossClient->listObjects($bucket);
-	$objectList = $listObjectInfo->getObjectList();
-	if (! empty($objectList)) {
-		foreach ($objectList as $objectInfo) {
-		print($objectInfo->getKey() . "\t" . $objectInfo->getSize() . "\t" . $objectInfo->getLastModified() . "\n");
-		}
-	}
-} catch (OssException $e) {
-	print $e->getMessage();
-}
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
 
+    $listObjectInfo = $ossClient->listObjects($bucket);
+    $objectList = $listObjectInfo->getObjectList();
+    if (! empty($objectList)) {
+        foreach ($objectList as $objectInfo) {
+        print($objectInfo->getKey() . "\t" . $objectInfo->getSize() . "\t" . $objectInfo->getLastModified() . "\n");
+        }
+    }
+} catch (OssException $e) {
+    print $e->getMessage();
+}
+            
 ```
 
-For more information, see [List objects](reseller.en-US/SDK Reference/PHP/Manage objects/List objects.md#) in [Manage objects](reseller.en-US/SDK Reference/PHP/Manage objects/Overview.md#).
+For more information about listing objects, see [List objects](/intl.en-US/SDK Reference/PHP/Manage objects/List objects.md) in [Manage objects](/intl.en-US/SDK Reference/PHP/Manage objects/Overview.md).
 
-## Delete objects { .section}
+## Delete objects
 
-Run the following code to delete a specified object:
+The following code provides an example on how to delete an object:
 
-```language-php
+```
 <? php
 if (is_file(__DIR__ . '/../autoload.php')) {
     require_once __DIR__ . '/../autoload.php';
@@ -173,24 +173,24 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
 use OSS\OssClient;
 use OSS\Core\OssException;
 
-// It is highly risky to log on with AccessKey of an Alibaba Cloud account because the account has permissions on all the APIs in OSS. We recommend that you log on as a RAM user to access APIs or perform routine operations and maintenance. To create a RAM account, log on to https://ram.console.aliyun.com.
+// Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS, because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to https://ram.console.aliyun.com.
 $accessKeyId = "<yourAccessKeyId>";
 $accessKeySecret = "<yourAccessKeySecret>";
-// This example uses endpoint China (Hangzhou). Specify the actual endpoint based on your requirements.
+// This example uses the endpoint of the China (Hangzhou) region. Specify the actual endpoint based on your requirements.
 $endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
-// Bucket name
+// Specify the bucket name.
 $bucket= "<yourBucketName>";
-// Object name
+// <yourObjectName> indicates the complete path of the object you want to delete from OSS, and must include the file extension of the object. For example, set <yourObjectName> to abc/efg/123.jpg.
 $object = "<yourObjectName>";
 
 try {
-	$ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-	$ossClient->deleteObject($bucket, $object);
+    $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+    $ossClient->deleteObject($bucket, $object);
 } catch (OssException $e) {
-	print $e->getMessage();
+    print $e->getMessage();
 }
-
+            
 ```
 
-For more information, see [Delete objects](reseller.en-US/SDK Reference/PHP/Manage objects/Delete objects.md#) in [Manage objects](reseller.en-US/SDK Reference/PHP/Manage objects/Overview.md#).
+For more information about deleting objects, see [Delete objects](/intl.en-US/SDK Reference/PHP/Manage objects/Delete objects.md) in Manage objects.
 
