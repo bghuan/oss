@@ -1,81 +1,116 @@
 # Image style
 
-Adding all the changes to the image after the URL makes the URL too long and inconvenient for management and reading. IMG allows you to save common operations as an alias, that is, a style. With the style, a complicated operation can be performed through a short URL.
+Image Processing \(IMG\) allows you to save IMG operations as a style. The style feature allows you to use a short IMG parameter to perform complex image processing operations.
 
-Multiple styles \(50 at most\) are grouped under a bucket. Each style is effective only within the bucket.
+## Limits
 
-## Style access rules
+Up to 50 styles can be created for a bucket. These styles can be used only for image objects in the bucket. If you require more than 50 styles, contact[technical support](https://workorder-intl.console.aliyun.com/#/ticket/createIndex).
 
-**URL parameters**
+## Create a style
 
-```
-<File URL>? x-oss-process=style/<StyleName>
-```
+1.  Log on to the [OSS console](https://oss.console.aliyun.com/).
 
-Example:
+2.  Click **Buckets**, and then click the name of the target bucket.
 
-`bucket.aliyuncs.com/sample.jpg? x-oss-process=style/stylename`
+3.  Choose **Data Processing** \> **Image Processing \(IMG\)**. Click **Create Rule**.
 
-This is the default style access method supported by IMG.
+4.  In the Create Rule pane, configure the style.
 
-**Separators**
+    You can use **Basic Edit** or **Advanced Edit** to create a style:
 
-```
-<File URL><Separator><StyleName>
-```
+    -   **Basic Edit**: You can use the IMG parameters listed by the system to choose the IMG methods. For example, resize an image, add a watermark, and modify the image format.
+    -   **Advanced Edit**: You can use the API code to edit the IMG methods. The format is: `image/action1,parame_value1/action2,parame_value2 /...`.
 
-Example:
+        For example: `image/resize,p_63/quality,q_90` indicates that the image is scaled down to 63% of the source image, and set the relative quality of the image to 90%.
 
-`bucket.aliyuncs.com/sample.jpg{separator}stylename`
+    For more information about IMG parameters, see the corresponding topics for IMG parameters.
 
-IMG regards the content after the separator in a URL as the style name. This is an optional method provided by IMG. You must set separators in the console. Separators such as `-`, `_`, `/`, and `!` are supported.
+    **Note:** The name of the image style must be 1 to 64 characters in length, and can contain only digits, letters, underscores \(\_\), hyphens \(-\), and periods \(.\).
 
--   StyleNameindicates the name of a style.
--   Style creations, deletions, and modifications are all performed in the console.
--   When the requested style does not exist in the specified bucket, the system returns the error NotSuchStyle.
-
-## Set separators
-
-1.  In the left-side bucket list of the [OSS console](https://oss.console.aliyun.com/overview), click the bucket to which you want to set separators.
-2.  Click the **Image Processing** tab, and then click **Access Settings**. As shown in the following figure:
-
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/4792/15674147552882_en-US.png)
-
-3.  In the **Access Settings** dialog box, set the following parameters:
-
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/4792/15674147552883_en-US.png)
-
-    -   Source Image Protection: After enabling the original image protection, you can only access the image file by passing in the StyleName or using a signature-based method. Direct accesses to the OSS original file or accesses by passing in image parameters and modifying the image style are not allowed.
-    -   Customize separator
-    Click **OK**.
+5.  Click **OK**.
 
 
-## Example
+## Export a style
 
-In this example, a style is created in the bucket image-demo.
+You can export a style from a bucket, and import the exported style to other buckets.
 
-|Style name|Style content|
-|----------|-------------|
-|panda\_style|image/resize,m\_fill,w\_300,h\_300,limit\_0/auto-orient,0/quality,q\_90/watermark,image\_cGFuZGEucG5n,t\_61,g\_se,y\_10,x\_10|
+1.  Log on to the [OSS console](https://oss.console.aliyun.com/).
 
--   Access through parameters
+2.  Click **Buckets**, and then click the name of the target bucket.
 
-    [http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=image/resize,m\_fill,w\_300,h\_300,limit\_0/auto-orient,0/quality,q\_90/watermark,image\_cGFuZGEucG5n,t\_61,g\_se,y\_10,x\_10](http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=image/resize,m_fill,w_300,h_300,limit_0/auto-orient,0/quality,q_90/watermark,image_cGFuZGEucG5n,t_61,g_se,y_10,x_10)
+3.  Choose **Data Processing** \> **Image Processing \(IMG\)**.
 
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/4792/15674147552884_en-US.jpg)
-
--   Access through URL parameters in style mode
-
-    [http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=style/panda\_style](http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg?x-oss-process=style/panda_style)
-
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/4792/15674147552885_en-US.jpg)
-
--   Access through style separators in style mode
-
-    [http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg@!panda\_style](http://image-demo.oss-cn-hangzhou.aliyuncs.com/example.jpg@!panda_style)
-
-    ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/4792/156741475658723_en-US.jpg)
+4.  Click **Export**. In the Save As dialog box, select the address to save the style, and click **Save**.
 
 
-These three methods bring the same result.
+## Import a style
+
+You can import the style object to a bucket to quickly generate multiple styles at a time.
+
+1.  Log on to the [OSS console](https://oss.console.aliyun.com/).
+
+2.  Click **Buckets**, and then click the name of the target bucket.
+
+3.  Choose **Data Processing** \> **Image Processing \(IMG\)**.
+
+4.  Click **Import**. In the Open dialog box, select the style object, and click **Open**.
+
+
+## Usage notes
+
+After you configure an image style, you can use the style to replace the IMG parameters:
+
+-   IMG URL
+
+    You can add an image style to the image URL in the following format: `http(s)//:BucketName.Endpoint/ObjectName? x-oss-process=style/<StyleName>`
+
+    Example: [https://image-demo-oss-zhangjiakou.oss-cn-zhangjiakou.aliyuncs.com/example.jpg?x-oss-process=style/small](https://image-demo-oss-zhangjiakou.oss-cn-zhangjiakou.aliyuncs.com/example.jpg?x-oss-process=style/small)
+
+    If you set the custom delimiter, use the delimiter to replace `? x-oss-process=style/` to further simplify the IMG URL.
+
+    For example, if you set the delimiter to an exclamation point \(!\), the IMG URL is: `http(s)//:BucketName.Endpoint/ObjectName! StyleName`
+
+    Example: [https://image-demo-oss-zhangjiakou.oss-cn-zhangjiakou.aliyuncs.com/example.jpg! small](https://image-demo-oss-zhangjiakou.oss-cn-zhangjiakou.aliyuncs.com/example.jpg!small)
+
+    For more information about how to configure a custom delimiter, see [Source image protection](/intl.en-US/Developer Guide/Data Processing/Image Processing/Source image protection.md).
+
+-   SDK
+
+    You can replace the IMG parameter code with the IMG style code. The following code provides an example on how to replace the IMG parameter code with the IMG style code by using OSS SDK for Java:
+
+    ```
+    // The endpoint of the China (Hangzhou) region is used in this example. Specify the actual endpoint.
+    String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+    // Security risks may arise if you use the AccessKey pair of an Alibaba Cloud account to log on to OSS because the account has permissions on all API operations. We recommend that you use your RAM user's credentials to call API operations or perform routine operations and maintenance. To create a RAM user, log on to the RAM console.
+    String accessKeyId = "<yourAccessKeyId>";
+    String accessKeySecret = "<yourAccessKeySecret>";
+    String bucketName = "<yourBucketName>";
+    String objectName = "<yourObjectName>";
+    
+    // Create an OSSClient instance.
+    OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    
+    // Use a custom style to process an image.
+    String style = "style/<yourCustomStyleName>";
+    GetObjectRequest request = new GetObjectRequest(bucketName, objectName);
+    request.setProcess(style);
+    // Save the image object named example-new.jpg to your local computer.
+    ossClient.getObject(request, new File("example-new.jpg"));
+    
+    // Shut down the OSSClient instance.
+    ossClient.shutdown();
+    ```
+
+    For more information about SDK demos for other programming languages, see the following topics:
+
+    -   [Java](/intl.en-US/SDK Reference/Java/IMG.md)
+    -   [Python](/intl.en-US/SDK Reference/Python/IMG.md)
+    -   [PHP](/intl.en-US/SDK Reference/PHP/IMG.md)
+    -   [Go](/intl.en-US/SDK Reference/Go/IMG.md)
+    -   [C](/intl.en-US/SDK Reference/C/IMG.md)
+    -   [.NET](/intl.en-US/SDK Reference/. NET/IMG.md)
+    -   [Node.js](/intl.en-US/SDK Reference/Node. js/IMG.md)
+    -   [Browser.js](/intl.en-US/SDK Reference/Browser.js/Image processing.md)
+
+**Note:** If you use a custom style to process dynamic images such as GIF images, you must add the /format,gif parameter to convert the format. Otherwise, the GIF image may become a static image after the GIF image is processed.
 
