@@ -1,6 +1,6 @@
 # Determine whether an object exists
 
-This topic describes how to determine whether an object exists.
+Before you perform an operation on an object in a bucket, you must determine whether the object exists. This topic describes how to determine whether an object exists.
 
 The following code provides an example on how to determine whether an object exists:
 
@@ -18,7 +18,7 @@ const client = new OSS({
 
 async function isExistObject(name, options = {}) {
   try {
-      await store.head(name, options);
+      await client.head(name, options);
       console.log('The object exists.')
    }  catch (error) {
       if (error.code === 'NoSuchKey') {
