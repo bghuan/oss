@@ -16,8 +16,7 @@ ZRS supports the Standard and Infrequent Access \(IA\) storage classes. The foll
 |Index|Standard|IA|
 |:----|:-------|:-|
 |Data durability \(designed for\)|99.9999999999% \(twelve 9's\)|99.9999999999% \(twelve 9's\)|
-|Service availability|99.95%|99.50%|
-|Service availability \(designed for\)|99.995%|99.995%|
+|Service availability|99.995%|99.50%|
 |Minimum billable size of objects|Actual size of objects|64 KB|
 |Minimum storage period|N/A|30 days|
 |Data retrieval fee|N/A|Based on the size of retrieved data. Unit: GB.|
