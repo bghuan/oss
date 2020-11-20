@@ -19,7 +19,7 @@ The following table lists the resource plans supported by OSS and corresponding 
 
 **Note:**
 
--   If an OSS storage plan and an SCU are in the same region at the same time, the OSS storage plan is used to deduct the storage fees. If the storage plan is insufficient, the SCU can be used to deduct fees. For more information, see [Overview](/intl.en-US/Block Storage/Storage capacity units/Overview.md).
+-   If an OSS storage plan and an SCU are belong to the same region at the same time, the OSS storage plan is used to deduct the storage fees. If the storage plan is insufficient, the SCU can be used to deduct fees. For more information, see [Overview](/intl.en-US/Block Storage/Storage capacity units/Overview.md).
 -   SCUs does not apply to the operations in this topic such as purchase, renewal, and upgrade. For more information, see [Create an SCU](/intl.en-US/Block Storage/Storage capacity units/Create an SCU.md).
 
 |×|×|√|
@@ -40,45 +40,44 @@ The following table lists the resource plans supported by OSS and corresponding 
 3.  Follow the purchase procedure to complete the payment.
 
 
+The following table describes resource plans available in different regions:
+
+|Resource plan|Region|
+|-------------|------|
+|Standard LRS plan|All regions|
+|IA LRS plan|All regions|
+|Downstream data transfer plan|All regions|
+
 ## Upgrade resource plans
 
 OSS allows you to upgrade resource plans. For more information, see [Upgrade resource plans](/intl.en-US/Pricing/Billing methods/Subscription/Upgrade resource plans.md).
 
 ## Renew resource plans
 
-You can renew resource plans that are about to expire to prolong the subscription periods. For more information, see [Renew resource plans](/intl.en-US/Pricing/Billing methods/Subscription/Renew resource plans.md).
+You can renew resource plans that are about to expire to extend the subscription periods. For more information, see [Renew resource plans](/intl.en-US/Pricing/Billing methods/Subscription/Renew resource plans.md).
 
 ## Example of resource plans
 
 A user purchasesa nationwide Standard LRS resource plan of 500 GB and a mainland China downstream data transfer plan of 100 GB.The resource usage in June includes:
 
--   China \(Hangzhou\)
-    -   300 GB of Standard LRS objects
-    -   110 GB of outbound traffic over the Internet
-    -   100,000 API requests
--   China \(Shanghai\)
-    -   200 GB of Standard ZRS objects that are stored
-    -   100 GB of Standard LRS objects that are stored
+-   300 GB of Standard LRS objects, 110 GB of outbound traffic over the Internet, and 100,000 API requests in the China \(Hangzhou\) region.
+-   100 GB of Standard LRS objects that are stored and 200 GB of Standard ZRS objects that are stored in the China \(Shanghai\) region.
 
-The following table lists the usage details of resource plans.
+The following table describes the usage details of resource plans.
 
-|Region|Billing item|Usage|Deductible resource plan|Pay-as-you-go|
-|------|------------|-----|------------------------|-------------|
-|China \(Hangzhou\)|Storage usage of Standard LRS|300 GB|Standard LRS plan of 500 GB|None|
-|Outbound traffic over the Internet|110 GB|Downstream data transfer plan of 100 GB to deduct traffic fees of 100 GB|10 GB|
-|API requests|100,000|None|100,000|
-|China \(Shanghai\)|Storage usage of Standard ZRS|200 GB|None **Note:** You cannot use the Standard LRS plan to deduct fees for storage usage of Standard ZRS.
-
-|200 GB|
-|Storage usage of Standard LRS|100 GB|Standard LRS plan of 500 GB|None|
+|Region|Deductible resource plan|Pay-as-you-go|
+|------|------------------------|-------------|
+|China \(Hangzhou\)|Standard LRS plan of 500 GB to deduct storage fees of 300 GB|100,000 API requests|
+|Downstream data transfer plan of 100 GB to deduct fees of 100 GB of outbound traffic over the Internet|Outbound traffic over the Internet of 10 GB|
+|China \(Shanghai\)|Standard LRS plan of 500 GB to deduct storage fees of 100 GB|Standard ZRS plan of 200 GB|
 
 ## FAQ
 
 -   When does a resource plan take effect?
 
-    The resource plan takes effect immediately after the payment. However, overdue payments before you purchase the resource plan cannot be completed using the resource plan.
+    The resource plan takes effect immediately after the payment. However, overdue payments before you purchase the resource plan cannot be completed by using the resource plan.
 
--   What do I do after the resource plan expires?
+-   What do I do after a resource plan expires?
 
     If you fail to renew a resource plan after the resource plan expires, the additional resources are charged on a pay-as-you-go basis.
 
@@ -86,14 +85,14 @@ The following table lists the usage details of resource plans.
 
     Yes, you can request a refund for a resource plan. For more information, see [How do I cancel resource plans?](/intl.en-US/Pricing/FAQ/How do I cancel resource plans?.md).
 
--   What do I do if the quota of the resource plan is exceeded?
+-   What do I do if the quota of a resource plan is exceeded?
 
     If the resources you use exceed the quota of the resource plan, the additional resources are charged on a pay-as-you-go basis.
 
 -   Can I purchase multiple resource plans?
     -   No, you cannot purchase multiple storage plans.
 
-        No, you cannot purchase multiple storage plans. Storage plans in the same region can be purchased only once in the same period of time. If you require a storage plan with a higher specification or longer duration, you can [upgrade](#section_nnt_zug_lsv) or [renew](#section_axy_bot_o4m) the existing storage plan.
+        Storage plans in the same region can be purchased only once in the same period of time. If you require a storage plan with a higher specification or longer duration, you can [upgrade](#section_nnt_zug_lsv) or [renew](#section_axy_bot_o4m) the existing storage plan.
 
     -   You can purchase and renew multiple downstream data transfer plans, but cannot upgrade the purchased plans.
 
