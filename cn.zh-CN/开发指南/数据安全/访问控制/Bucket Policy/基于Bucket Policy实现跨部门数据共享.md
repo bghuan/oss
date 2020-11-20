@@ -4,7 +4,7 @@
 
 部门A将存储在example-bucket存储空间（Bucket）中的数据共享给部门B的用户，并允许部门B的用户下载数据。本文介绍如何以最小权限原则对共享数据进行权限控制。在本场景下两个部门的管理员、用户与共享存储空间之间的逻辑关系如下图所示：
 
-![policy1](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/zh-CN/2647559951/p148072.png)
+![policy1](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/2647559951/p148072.png)
 
 ## 实现流程
 
@@ -35,7 +35,7 @@
 
 -   企业账号已通过访问控制RAM创建A部门用户及其普通用户、B部门管理员用户及其普通用户。
 
-    有关创建IAM用户的详情，请参见[创建RAM用户](/cn.zh-CN/用户管理/创建RAM用户.md)。
+    有关创建RAM用户的详情，请参见[创建RAM用户](/cn.zh-CN/用户管理/创建RAM用户.md)。
 
 -   已获取RAM用户UID。
 
