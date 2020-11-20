@@ -2,31 +2,6 @@
 
 This tutorial demonstrates how to use RAM policies to control access to OSS buckets, folders and objects.
 
-## Prerequisites
-
-Before you use RAM policies to control access to OSS, ensure the following conditions are met:
-
--   A bucket is created.
-
-    A bucket named example-company is created by an Alibaba Cloud account in this topic as an example. For more information about how to create a bucket, see [Create buckets](/intl.en-US/Console User Guide/Manage buckets/Create buckets.md).
-
--   Objects and folders are uploaded.
-
-    In this topic, an object named oss-dg.pfg and the following three folders are uploaded to the root directory of the example-company bucket: Development/, Marketing/, and Private/. The following table describes the objects contained in each folder and their names with prefixes.
-
-    |Folder|Object with prefix|
-    |------|------------------|
-    |Development/|Development/Alibaba Cloud.pdf, Development/ProjectA.docx, and Development/ProjectB.docx|
-    |Marketing/|Marketing/data2016.xlsx and Marketing/example2016.txt|
-    |Private/|Private/2017/images.zip and Private/2017/promote.pptx|
-
-    For more information about how to upload objects, see [Upload objects](/intl.en-US/Console User Guide/Upload, download, and manage objects/Upload objects.md).
-
--   RAM users are created.
-
-    Two RAM users named Anne and Leo are created by an Alibaba Cloud account in this topic as an example. For more information about how to create RAM users, see [Create a RAM user](/intl.en-US/RAM User Management/Create a RAM user.md).
-
-
 ## Background information
 
 RAM policies are configured based on users. You can manage users by configuring RAM policies. For users such as employees, systems, or applications, you can control which resources are accessible. For example, you can create a RAM policy to grant users read permissions on a bucket.
@@ -34,49 +9,67 @@ RAM policies are configured based on users. You can manage users by configuring 
 RAM policies are in the JSON format. A RAM policy includes the following fields:
 
 -   Statement: the authorization statement. A RAM policy can include multiple authorization statements.
--   Effect: the effect of the policy . Valid values: Allow and Deny.
+-   Effect: the effect of the policy. Valid values: Allow and Deny.
 
-    **Note:** If a RAM policy includes an Allow statement and a Deny statement, the Deny statement takes precedence over the Allow statement.
+    **Note:** If a RAM policy includes an Allow statement and a Deny statement at the same time, the Deny statement takes precedence over the Allow statement.
 
 -   Action: the authorized actions on resources.
 
-If you use RAM policies, we recommend that you use RAM Policy Editor to generate required RAM policies. For more information, see [RAM Policy Editor](/intl.en-US/Tools/RAM Policy Editor.md).
+If you use RAM policies, we recommend that you use RAM Policy Editor to generate RAM policies. For more information, see [RAM Policy Editor](/intl.en-US/Tools/RAM Policy Editor.md).
 
 Compared with RAM policies, bucket policies can be configured in the OSS console. The bucket owner can grant other users permissions to access OSS resources. For more information, see [Use bucket policies to authorize other users to access OSS resources](/intl.en-US/Console User Guide/Upload, download, and manage objects/Use bucket policies to authorize other users to access OSS resources.md).
 
-## Scenario and implementation
+## Buckets and folders
 
-In this example, you need to grant the RAM users Anne and Leo permissions to access resources in different folders as follows:
+Alibaba Cloud OSS uses a flat data model structure instead of a hierarchical one. All objects \(files\) are stored in buckets. Therefore, OSS does not have directories and subfolders that are used in hierarchical file systems. However, you can simulate a folder hierarchy in the OSS console to group, classify, and manage objects by folders. The following figure shows some sample folders in the OSS console.
 
--   Grant Anne permissions to access objects and subfolders only in Development/. For more information, see [Step 2: Grant RAM user Anne specific permissions](#section_gqp_p63_kl8).
--   Grant Leo permissions to access objects and subfolders only in Marketing/. For more information, see [Step 3: Grant RAM user Leo specific permissions](#section_fvm_dph_z1k).
--   Set the ACL of the Private/ folder to private, which indicates that all RAM users created by the Alibaba Cloud account cannot access the folder.
+![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/0864585061/p178620.png)
 
-Based on the scenario in this topic, the following permissions must be granted to both Anne and Leo:
+OSS is a distributed object storage service in which objects are identified as key-value pairs. You can retrieve the content of an object based on the object name. For example, an object named oss-dg.pdf and the following three folders are stored in a bucket named ramtest-bucket: Development, Marketing, and Private.
 
--   Permissions to list all buckets owned by the Alibaba Cloud account, that is, permissions to perform oss:ListBuckets.
--   Permissions to list objects and folders in the root directory of the example-company bucket, that is, permissions to perform oss:ListObjects.
+-   When you create the Development folder, the OSS console creates an object whose key is `Development/`. A forward slash \(`/`\) is included in the key as a delimiter.
+-   When you upload an object named ProjectA.docx to the Development folder, the OSS console uploads the object and sets its key to `Development/ProjectA.docx`.
 
-In this case, you can create RAM user groups to classify and authorize RAM users created by the Alibaba Cloud account for easier user and permission management. For more information about how to create and authorize user groups, see [Step 1: Create a RAM user group and grant permissions to the group](#section_tu8_3br_l9p).
+    In the key, `Development` is the prefix and the forward slash \(`/`\) is the delimiter. You can retrieve a list of all objects that share a common prefix and delimiter in the bucket. In the console, click the Development folder. The console lists the objects in the folder. The following figure shows the objects in the Development folder.
 
-## Before you begin
+    ![development](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/0864585061/p178622.png)
+
+    **Note:** To list objects in the Development folder of the ramtest-bucket bucket, the console sends a request to OSS to list objects whose names include the specified prefix `Development` and a forward slash \(`/`\) as the delimiter. As a result, the console lists the objects in the folder in the same way as file systems do. In the preceding example, three objects with the following keys are stored in the ramtest-bucket bucket: `Development/Alibaba Cloud.pdf`, `Development/ProjectA.docx`, and `Development/ProjectB.docx`.
+
+
+Before you go into this tutorial, you must understand the concept of root-level bucket content. In this example, the following objects are stored in ramtest-bucket bucket:
+
+-   Development/Alibaba Cloud.pdf
+-   Development/ProjectA.docx
+-   Development/ProjectB.docx
+-   Marketing/data2016.xlsx
+-   Marketing/data2016.xlsx
+-   Private/2017/images.zip
+-   Private/2017/promote.pptx
+-   oss-dg.pdf
+
+The keys of these objects determine a logical hierarchy with Development, Marketing, and Private as root-level folders and oss-dg.pdf as a root-level object. When you click the bucket name in the OSS console, the common prefix and delimiter shared by multiple objects \(Development/, Marketing/, and Private/\) are displayed as root-level folders. The oss-dg.pdf object does not have a prefix. Therefore, it is displayed as an root-level object.
+
+![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/0864585061/p178620.png)
+
+## Requests and responses
 
 Before you grant permissions to RAM users, you must understand how the OSS console interacts with OSS when you click a bucket name in the console.
 
 -   Send a request to access a bucket
 
-    When you click the example-company bucket in the console, the console sends a [GetBucket](/intl.en-US/API Reference/Bucket operations/Basic operations/GetBucket (ListObjects).md) request to OSS.
+    When you click the ramtest-bucket bucket in the OSS console, the console sends a [GetBucket](/intl.en-US/API Reference/Bucket operations/Basic operations/GetBucket (ListObjects).md) request to OSS.
 
     -   Sample request
 
         ```
         GET /? prefix=&delimiter=/ HTTP/1.1
-        Host: example-company.oss-cn-hangzhou.aliyuncs.com
+        Host: ramtest-bucket.oss-cn-hangzhou.aliyuncs.com
         Date: Fri, 24 Feb 2012 08:43:27 GMT
         Authorization: OSS qn6qrrqxo2oawuk53otf****:DNrnx7xHk3sgysx7I8U9I9IY****
         ```
 
-        In the preceding request, the value of the prefix parameter is an empty string and the value of the delimiter parameter is a forward slash \(/\).
+        In the preceding request, the value of the prefix parameter is empty and the value of the delimiter parameter is a forward slash \(/\).
 
     -   Sample response
 
@@ -90,7 +83,7 @@ Before you grant permissions to RAM users, you must understand how the OSS conso
         Server: AliyunOSS
         <? xml version="1.0" encoding="UTF-8"? >
         <ListBucketResult xmlns=¡±http://doc.oss-cn-hangzhou.aliyuncs.com¡±>
-        <Name>example-company</Name>
+        <Name>ramtest-bucket</Name>
         <Prefix></Prefix>
         <Marker></Marker>
         <MaxKeys>100</MaxKeys>
@@ -114,13 +107,13 @@ Before you grant permissions to RAM users, you must understand how the OSS conso
 
     -   Response resolution
 
-        The console resolves the response returned by OSS and displays the following items in the root directory of the example-company bucket.
+        The console resolves the response returned by OSS and displays the objects and folders in the root directory of the bucket.
 
-        ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/0595688951/p1189.png)
+        ![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/0864585061/p178620.png)
 
--   Send a request to access a folder in the bucket
+-   Send a request to access a folder of the bucket
 
-    When you click the Development/ folder in the console, the console sends a [GetBucket](/intl.en-US/API Reference/Bucket operations/Basic operations/GetBucket (ListObjects).md) request to OSS. The request includes the prefix and delimiter parameters.
+    When you click the Development/ folder of the ramtest-bucket bucket in the console, the console sends a [GetBucket](/intl.en-US/API Reference/Bucket operations/Basic operations/GetBucket (ListObjects).md) request to OSS. The request includes the prefix and delimiter parameters.
 
     -   Sample request
 
@@ -135,7 +128,7 @@ Before you grant permissions to RAM users, you must understand how the OSS conso
 
     -   Sample response
 
-        In the response, OSS returns object keys with the specified prefix.
+        In the response, OSS returns objects whose keys include the specified prefix.
 
         ```
         HTTP/1.1 200 OK
@@ -147,7 +140,7 @@ Before you grant permissions to RAM users, you must understand how the OSS conso
         Server: AliyunOSS
         <? xml version="1.0" encoding="UTF-8"? >
         <ListBucketResult xmlns=¡±http://doc.oss-cn-hangzhou.aliyuncs.com¡±>
-        <Name>example-company</Name>
+        <Name>ramtest-bucket</Name>
         <Prefix>Development/</Prefix>
         <Marker></Marker>
         <MaxKeys>100</MaxKeys>
@@ -170,12 +163,55 @@ Before you grant permissions to RAM users, you must understand how the OSS conso
 
     -   Response resolution
 
-        The console resolves the response returned by OSS and displays the following objects in the Development/ folder.
+        The console resolves the response returned by OSS and displays the objects in the Development/ folder.
 
-        ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/0595688951/p1190.png)
+        ![development](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/0864585061/p178622.png)
 
 
-## Step 1: Create a RAM user group and grant permissions to the group
+## Scenarios
+
+You must create RAM users to perform the steps in this tutorial. Two RAM users named Anne and Leo are created by an Alibaba Cloud account in this topic as an example. For more information about how to create RAM users, see [Create a RAM user](/intl.en-US/RAM User Management/Create a RAM user.md).
+
+In this example, you must grant the following permissions to Anne and Leo:
+
+-   Grant Anne permissions to access objects and subfolders only in the Development/ folder. For more information, see [Step 3: Grant RAM user Anne specific permissions](#section_gqp_p63_kl8).
+-   Grant Leo permissions to access objects and subfolders only in the Marketing/ folder. For more information, see [Step 4: Grant RAM user Leo specific permissions](#section_fvm_dph_z1k).
+-   Set the ACL of the Private/ folder to private, which indicates that all RAM users created by the Alibaba Cloud account cannot access the folder.
+
+Based on the scenario in this topic, the following permissions must be granted to both Anne and Leo:
+
+-   Permissions to perform oss:ListBuckets to list all buckets owned by the Alibaba Cloud account.
+-   Permissions to perform oss:ListObjects to list objects and folders in the root directory of the ramtest-bucket bucket.
+
+In this case, you can create RAM user groups to classify and authorize RAM users created by the Alibaba Cloud account for user and permission management. For more information about how to create a RAM user group and grant permissions to a user group, see [Step 2: Create a RAM user group and grant permissions to the group](#section_tu8_3br_l9p).
+
+## Step 1: Create a bucket and upload objects to the bucket.
+
+In this step, you can log on to the OSS console by using your Alibaba Cloud account and create a bucket. Then, create the Development, Marketing, and Private folders in the bucket and upload one or two sample objects to each folder in the console.
+
+1.  Log on to the [OSS console](https://oss.console.aliyun.com/) by using your Alibaba Cloud account.
+
+2.  Create a bucket named ramtest-bucket. For more information, see [Create buckets](/intl.en-US/Console User Guide/Manage buckets/Create buckets.md).
+
+3.  Upload an object to the root directory of the bucket. For more information, see [Upload objects](/intl.en-US/Console User Guide/Upload, download, and manage objects/Upload objects.md).
+
+    In this example, an object named oss-dg.pdf is uploaded to the root directory of the bucket.
+
+4.  Create the following folders in the bucket: Development, Marketing, and Private. For more information about how to create folders, see [Create folders](/intl.en-US/Console User Guide/Upload, download, and manage objects/Create folders.md).
+
+5.  Upload one or two objects to each folder.
+
+    In this example, the following objects are uploaded to the bucket:
+
+    -   Development/Alibaba Cloud.pdf
+    -   Development/ProjectA.docx
+    -   Development/ProjectB.docx
+    -   Marketing/data2016.xlsx
+    -   Marketing/data2016.xlsx
+    -   Private/2017/images.zip
+    -   Private/2017/promote.pptx
+
+## Step 2: Create a RAM user group and grant permissions to the group
 
 In this topic, a user group named Staff is created as an example. For more information about how to create a user group, see [Create a RAM user group](/intl.en-US/RAM User Group Management/Create a RAM user group.md).
 
@@ -242,7 +278,7 @@ In this topic, a user group named Staff is created as an example. For more infor
                  "oss:ListObjects"
                ],
                "Resource": [
-                 "acs:oss:*:*:example-company"
+                 "acs:oss:*:*:ramtest-bucket"
                ],
                "Condition": {
                  "StringLike": {
@@ -259,10 +295,10 @@ In this topic, a user group named Staff is created as an example. For more infor
          }
         ```
 
-    **Note:** You can modify a RAM policy for a maximum of five times. To modify a RAM policy that has been modified for five times, you must delete the policy, create a new one, and assign the new policy to the Staff group.
+    **Note:** You can modify a RAM policy for up to five times. To modify a RAM policy that is modified for five times, you must delete the policy, create a new one, and assign the new policy to the Staff group.
 
 
-## Step 2: Grant RAM user Anne specific permissions
+## Step 3: Grant RAM user Anne specific permissions
 
 You can perform the following steps to grant RAM user Anne permissions to access all objects in the Development/ folder.
 
@@ -278,7 +314,7 @@ You can perform the following steps to grant RAM user Anne permissions to access
              "oss:ListObjects"
            ],
            "Resource": [
-             "acs:oss:*:*:example-company"
+             "acs:oss:*:*:ramtest-bucket"
            ],
            "Condition": {
              "StringEquals": {
@@ -294,7 +330,7 @@ You can perform the following steps to grant RAM user Anne permissions to access
              "oss:GetObject",         
            ],
            "Resource": [
-             "acs:oss:*:*:example-company/Development/*"
+             "acs:oss:*:*:ramtest-bucket/Development/*"
            ],
            "Condition": {}
          }
@@ -317,7 +353,7 @@ To allow RAM user Anne to not only access objects in the Development/ folder but
          "oss:ListObjects"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company"
+         "acs:oss:*:*:ramtest-bucket"
        ],
        "Condition": {
          "StringEquals": {
@@ -335,7 +371,7 @@ To allow RAM user Anne to not only access objects in the Development/ folder but
          "oss:GetObjectAcl"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company/Development/*"
+         "acs:oss:*:*:ramtest-bucket/Development/*"
        ],
        "Condition": {}
      }
@@ -343,7 +379,7 @@ To allow RAM user Anne to not only access objects in the Development/ folder but
  }
 ```
 
-## Step 3: Grant RAM user Leo specific permissions
+## Step 4: Grant RAM user Leo specific permissions
 
 You can perform the following steps to grant RAM user Leo permissions to access all objects in the Marketing/ folder.
 
@@ -359,7 +395,7 @@ You can perform the following steps to grant RAM user Leo permissions to access 
              "oss:ListObjects"
            ],
            "Resource": [
-             "acs:oss:*:*:example-company"
+             "acs:oss:*:*:ramtest-bucket"
            ],
            "Condition": {
              "StringEquals": {
@@ -375,7 +411,7 @@ You can perform the following steps to grant RAM user Leo permissions to access 
              "oss:GetObject",         
            ],
            "Resource": [
-             "acs:oss:*:*:example-company/Marketing/*"
+             "acs:oss:*:*:ramtest-bucket/Marketing/*"
            ],
            "Condition": {}
          }
@@ -386,11 +422,11 @@ You can perform the following steps to grant RAM user Leo permissions to access 
 2.  Assign the `AllowGroupToSeeBucketListInConsole` policy to RAM user Leo.
 
 
-## Step 4: Prohibit RAM users from accessing the Private folder
+## Step 5: Prohibit RAM users from accessing the Private folder
 
-In this topic, you need to set the ACL of the Private/ folder to private, which indicates that all RAM users created by the Alibaba Cloud account cannot access the folder. Therefore, you must add a policy that explicitly denies access to the Private folder. This policy takes precedence over other RAM users. You can perform the following steps to add the policy.
+In this example, you must set the ACL of the Private/ folder to private, which indicates that all RAM users created by the Alibaba Cloud account cannot access the folder. Therefore, you must add a policy that explicitly denies access to the Private folder. This policy takes precedence over other permissions. You can perform the following steps to add the policy.
 
--   Add the following statement to explicitly deny any access to the Private folder \(example-company/Private/\*\):
+-   Add the following statement to explicitly deny any access to the Private folder \(ramtest-bucket/Private/\*\):
 
     ```
     {
@@ -399,13 +435,13 @@ In this topic, you need to set the ACL of the Private/ folder to private, which 
           "oss:*"
         ],
         "Resource": [
-          "acs:oss:*:*:example-company/Private/*"
+          "acs:oss:*:*:ramtest-bucket/Private/*"
         ],
         "Condition": {}
       }
     ```
 
--   Deny the `ListObjects` operations when a request is sent to access objects with the Private prefix.
+-   Deny `ListObjects` requests sent to access objects whose names contain the Private prefix.
 
     ```
     {
@@ -426,9 +462,9 @@ In this topic, you need to set the ACL of the Private/ folder to private, which 
       }
     ```
 
-    After the preceding policy is added, OSS returns an error when the RAM users to list the Private/2017/images.zip and Private/2017/promote.pptx objects in the Private folder.
+    After the preceding policy is added, OSS returns an error when the RAM users send requests to list the Private/2017/images.zip and Private/2017/promote.pptx objects in the Private folder.
 
--   Replace the policy `AllowGroupToSeeBucketListInConsole` for the Staff group with an updated policy that contains the preceding deny statements.
+-   Replace the policy `AllowGroupToSeeBucketListInConsole` for the Staff group with the updated policy that contains the preceding deny statements.
 
     After the updated policy is applied, none of the RAM users in the user group can access the Private folder in your bucket.
 
@@ -455,7 +491,7 @@ In this topic, you need to set the ACL of the Private/ folder to private, which 
          "oss:ListObjects"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company"
+         "acs:oss:*:*:ramtest-bucket"
        ],
        "Condition": {
          "StringEquals": {
@@ -474,7 +510,7 @@ In this topic, you need to set the ACL of the Private/ folder to private, which 
          "oss:*"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company/Private/*"
+         "acs:oss:*:*:ramtest-bucket/Private/*"
        ],
        "Condition": {}
      },
