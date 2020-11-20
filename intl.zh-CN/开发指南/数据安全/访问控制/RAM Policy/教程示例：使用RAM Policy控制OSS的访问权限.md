@@ -2,31 +2,6 @@
 
 本教程示例详细演示了如何使用RAM Policy控制用户对OSS存储空间（Bucket）、文件夹以及文件夹下文件（Object）的访问。
 
-## 前提条件
-
-使用RAM Policy控制用户对存储空间、文件夹以及文件夹下文件的访问控制前，确保已完成如下事项：
-
--   已创建存储空间。
-
-    此处以使用阿里云主账号创建一个名为example-company的存储空间为例。有关创建存储空间的详情，请参见[创建存储空间](/intl.zh-CN/控制台用户指南/存储空间管理/创建存储空间.md)。
-
--   已上传文件或文件夹。
-
-    在example-company的存储空间中上传一个根目录文件（oss-dg.pdf）以及三个文件夹，分别为Development/、Marketing/和Private/。各文件夹中包含的文件以及各文件在控制台的显示层级如下：
-
-    |文件夹|文件显示层级|
-    |---|------|
-    |Development/|Development/Alibaba Cloud.pdf、Development/ProjectA.docx、Development/ProjectB.docx|
-    |Marketing/|Marketing/data2016.xlsx、Marketing/example2016.txt|
-    |Private/|Private/2017/images.zip、Private/2017/promote.pptx|
-
-    有关上传文件的详情请参见[上传文件](/intl.zh-CN/控制台用户指南/上传、下载和管理文件/上传文件.md)。
-
--   已创建RAM用户
-
-    此处以通过阿里云主账号创建RAM用户Anne和Leo为例。有关创建RAM用户的详情，请参见[创建RAM用户](/intl.zh-CN/用户管理/创建RAM用户.md)。
-
-
 ## 背景信息
 
 RAM Policy是基于用户的授权策略。通过设置RAM Policy，您可以集中管理您的用户（例如员工、系统或应用程序），以及控制用户可以访问您名下哪些资源的权限，例如限制您的用户只拥有对某一个Bucket的读权限。
@@ -44,34 +19,52 @@ RAM Policy为JSON格式。各字段定义如下：
 
 相比于RAM Policy，Bucket Policy支持在控制台直接进行图形化配置操作，并且Bucket拥有者直接可以进行访问授权。详情请参见[使用Bucket Policy授权其他用户访问OSS资源](/intl.zh-CN/控制台用户指南/上传、下载和管理文件/使用Bucket Policy授权其他用户访问OSS资源.md)。
 
-## 场景与实现
+## 存储空间和文件夹的基本概念
 
-假设您需要为RAM用户Anne和Leo分别授予访问上述不同级别资源的权限：
+阿里云OSS的数据模型为扁平型结构，所有文件都直接隶属于其对应的存储空间。因此，OSS缺少文件系统中类似于目录与子文件夹的层次结构。但是，您可以在OSS控制台上模拟文件夹层次结构。在该控制台中，您可以按文件夹对相关文件进行分组、分类和管理，如下图所示。
 
--   RAM用户Anne仅允许访问Development/文件夹下的所有子文件夹以及文件。详情请参见[步骤2：授予RAM用户Anne特定权限](#section_gqp_p63_kl8)。
--   RAM用户Leo仅允许访问Marketing/文件夹下的所有子文件夹以及文件。详情请参见[步骤3：授予RAM用户Leo特定权限](#section_fvm_dph_z1k)。
--   Private/文件夹访问权限保留为私有，即主账号下的所有RAM用户均不能访问。
+![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/5300734061/p178620.png)
 
-结合本示例场景得知RAM用户Anne和Leo需同时具有以下权限：
+OSS提供使用键值（key）对格式的分布式对象存储服务。您可以根据其唯一的key（对象名）检索对象的内容。例如，名为ramtest-bucket的存储空间有三个文件夹，分别为DevelopmentMarketing和Private，以及一个对象oss-dg.pdf。
 
--   列举主账号下所有存储空间的权限，即oss:ListBuckets的操作权限。
--   列举example-company存储空间中的根目录文件、文件夹和对象的权限，即oss:ListObjects的操作权限。
+-   在创建Development文件夹时，控制台会创建一个key为`Development/`的对象，文件夹的key包括分隔符`/`。
+-   当您将名为ProjectA.docx 的对象上传到Development 文件夹中时，控制台会上传该对象并将其key设置为`Development/ProjectA.docx`。
 
-此时，您可以通过创建用户组对职责相同的RAM用户进行分类并授权，从而更好的管理用户及其权限。有关创建用户组并授予用户组级别权限的详情，请参见[步骤1：创建用户组并授予用户组级别权限](#section_tu8_3br_l9p)。
+    在该key中，`Development`为前缀，而`/`为分隔符。您可以从存储空间中获取具有特定前缀和分隔符的所有对象的列表。在控制台中，单击Development 文件夹时，控制台会列出文件夹中的对象，如下图所示。
 
-## 授权前须知
+    ![development](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/5300734061/p178622.png)
+
+    **说明：** 当控制台列举ramtest-bucket存储空间中的 Development文件夹时，它会向OSS发送一个用于指定前缀 `Development`和分隔符`/`的请求。控制台的响应与文件系统类似，会显示文件夹列表。上例说明，存储空间ramtest-bucket有三个对象，其key分别为`Development/Alibaba Cloud.pdf`、`Development/ProjectA.docx`及`Development/ProjectB.docx`。
+
+
+在本教程开始之前，您还需要了解根级存储空间内容的概念。假设ramtest-bucket存储空间包含以下对象：
+
+-   Development/Alibaba Cloud.pdf
+-   Development/ProjectA.docx
+-   Development/ProjectB.docx
+-   Marketing/data2016.xlsx
+-   Marketing/data2016.xlsx
+-   Private/2017/images.zip
+-   Private/2017/promote.pptx
+-   oss-dg.pdf
+
+这些对象的key构建了一个以Development、Marketing和Private作为根级文件夹并以 oss-dg.pdf作为根级对象的逻辑层次结构。当您单击OSS控制台中的存储空间名时，控制台会将一级前缀和一个分隔符，例如Development/、Marketing/和Private/显示为根级文件夹。对象oss-dg.pdf 没有前缀，因此显示为根级别项。
+
+![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/5300734061/p178620.png)
+
+## OSS的请求和响应逻辑
 
 在授予RAM用户相关权限之前，您需要了解单击某个存储空间的名字时控制台向OSS发送请求、OSS返回响应，以及控制台如何解析该响应的逻辑。
 
 -   请求某个存储空间
 
-    单击example-company存储空间时，控制台会将[GetBucket](/intl.zh-CN/API 参考/关于Bucket的操作/基础操作/GetBucket (ListObjects).md)请求发送至OSS。
+    单击ramtest-bucket存储空间时，控制台会将[GetBucket](/intl.zh-CN/API 参考/关于Bucket的操作/基础操作/GetBucket (ListObjects).md)请求发送至OSS。
 
     -   请求示例
 
         ```
         GET /?prefix=&delimiter=/ HTTP/1.1
-        Host: example-company.oss-cn-hangzhou.aliyuncs.com
+        Host: ramtest-bucket.oss-cn-hangzhou.aliyuncs.com
         Date: Fri, 24 Feb 2012 08:43:27 GMT
         Authorization: OSS qn6qrrqxo2oawuk53otf****:DNrnx7xHk3sgysx7I8U9I9IY****
         ```
@@ -90,7 +83,7 @@ RAM Policy为JSON格式。各字段定义如下：
         Server: AliyunOSS
         <?xml version="1.0" encoding="UTF-8"?>
         <ListBucketResult xmlns=¡±http://doc.oss-cn-hangzhou.aliyuncs.com¡±>
-        <Name>example-company</Name>
+        <Name>ramtest-bucket</Name>
         <Prefix></Prefix>
         <Marker></Marker>
         <MaxKeys>100</MaxKeys>
@@ -116,7 +109,7 @@ RAM Policy为JSON格式。各字段定义如下：
 
         控制台会解析此结果并显示如下的根级别项：
 
-        ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/zh-CN/6647559951/p1189.png)
+        ![ram](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/5300734061/p178620.png)
 
 -   请求存储空间下的某个文件夹
 
@@ -147,7 +140,7 @@ RAM Policy为JSON格式。各字段定义如下：
         Server: AliyunOSS
         <?xml version="1.0" encoding="UTF-8"?>
         <ListBucketResult xmlns=¡±http://doc.oss-cn-hangzhou.aliyuncs.com¡±>
-        <Name>example-company</Name>
+        <Name>ramtest-bucket</Name>
         <Prefix>Development/</Prefix>
         <Marker></Marker>
         <MaxKeys>100</MaxKeys>
@@ -172,12 +165,55 @@ RAM Policy为JSON格式。各字段定义如下：
 
         控制台会解析此结果并显示如下的key：
 
-        ![](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/zh-CN/6647559951/p1190.png)
+        ![development](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/zh-CN/5300734061/p178622.png)
 
 
-## 步骤1：创建用户组并授予用户组级别权限
+## 场景说明
 
-此处以创建Staff用户组为例，有关创建用户组的详情请参见[创建用户组](/intl.zh-CN/用户组管理/创建用户组.md)。
+在完成本教程各场景示例前，您需要先创建RAM用户。此处以通过阿里云主账号创建RAM用户Anne和Leo为例。有关创建RAM用户的详情，请参见[创建RAM用户](/intl.zh-CN/用户管理/创建RAM用户.md)。
+
+假设您需要为RAM用户Anne和Leo分别授予访问以下不同资源的权限：
+
+-   RAM用户Anne仅允许访问Development/文件夹下的所有子文件夹以及文件。详情请参见[步骤3：授予RAM用户Anne特定权限](#section_gqp_p63_kl8)。
+-   RAM用户Leo仅允许访问Marketing/文件夹下的所有子文件夹以及文件。详情请参见[步骤4：授予RAM用户Leo特定权限](#section_fvm_dph_z1k)。
+-   Private/文件夹访问权限保留为私有，即主账号下的所有RAM用户均不能访问。
+
+结合本示例场景得知RAM用户Anne和Leo需同时具有以下权限：
+
+-   列举主账号下所有存储空间的权限，即oss:ListBuckets的操作权限。
+-   列举ramtest-bucket存储空间中的根目录文件、文件夹和对象的权限，即oss:ListObjects的操作权限。
+
+此时，您可以通过创建用户组对职责相同的RAM用户进行分类并授权，从而更好的管理用户及其权限。关于如何创建用户组并授予用户组级别权限，请参见[步骤2：创建用户组并授予用户组级别权限](#section_tu8_3br_l9p)。
+
+## 步骤1：创建存储空间并上传文件
+
+在此步骤中，您可以使用主账号登录到OSS控制台、创建存储空间、并将文件夹Development、Marketing和Private添加到存储空间中，然后在每个文件夹中上传一个或两个示例文件。
+
+1.  使用主账号登录[OSS控制台](https://oss.console.aliyun.com/)。
+
+2.  创建名为ramtest-bucket的存储空间，详情请参见[创建存储空间](/intl.zh-CN/控制台用户指南/存储空间管理/创建存储空间.md)。
+
+3.  将一个文件上传到存储空间根目录中，具体步骤，请参见[上传文件](/intl.zh-CN/控制台用户指南/上传、下载和管理文件/上传文件.md)。
+
+    本示例假设您将文件oss-dg.pdf上传到存储空间的根目录。
+
+4.  添加名为Development、Marketing和Private的三个文件夹。具体步骤，请参见[创建文件夹](/intl.zh-CN/控制台用户指南/上传、下载和管理文件/新建目录.md)。
+
+5.  在每个文件夹中上传一到两个文件。
+
+    本示例假设您将具有以下对象键的对象上传到存储空间中：
+
+    -   Development/Alibaba Cloud.pdf
+    -   Development/ProjectA.docx
+    -   Development/ProjectB.docx
+    -   Marketing/data2016.xlsx
+    -   Marketing/data2016.xlsx
+    -   Private/2017/images.zip
+    -   Private/2017/promote.pptx
+
+## 步骤2：创建用户组并授予用户组级别权限
+
+以创建Staff用户组为例，有关创建用户组的详情请参见[创建用户组](/intl.zh-CN/用户组管理/创建用户组.md)。
 
 -   授予RAM用户列举主账号下的所有存储空间的权限
     1.  创建策略。
@@ -242,7 +278,7 @@ RAM Policy为JSON格式。各字段定义如下：
                  "oss:ListObjects"
                ],
                "Resource": [
-                 "acs:oss:*:*:example-company"
+                 "acs:oss:*:*:ramtest-bucket"
                ],
                "Condition": {
                  "StringLike": {
@@ -262,7 +298,7 @@ RAM Policy为JSON格式。各字段定义如下：
     **说明：** 您最多可对策略内容修改5次。如果超过了5次，则需要删除该策略并创建一个新的策略，然后再次将新策略分配给Staff用户组。
 
 
-## 步骤2：授予RAM用户Anne特定权限
+## 步骤3：授予RAM用户Anne特定权限
 
 以下步骤演示了如何向RAM用户Anne授予访问Development/文件夹下所有文件的权限。
 
@@ -278,7 +314,7 @@ RAM Policy为JSON格式。各字段定义如下：
              "oss:ListObjects"
            ],
            "Resource": [
-             "acs:oss:*:*:example-company"
+             "acs:oss:*:*:ramtest-bucket"
            ],
            "Condition": {
              "StringEquals": {
@@ -294,7 +330,7 @@ RAM Policy为JSON格式。各字段定义如下：
              "oss:GetObject",         
            ],
            "Resource": [
-             "acs:oss:*:*:example-company/Development/*"
+             "acs:oss:*:*:ramtest-bucket/Development/*"
            ],
            "Condition": {}
          }
@@ -317,7 +353,7 @@ RAM Policy为JSON格式。各字段定义如下：
          "oss:ListObjects"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company"
+         "acs:oss:*:*:ramtest-bucket"
        ],
        "Condition": {
          "StringEquals": {
@@ -335,7 +371,7 @@ RAM Policy为JSON格式。各字段定义如下：
          "oss:GetObjectAcl"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company/Development/*"
+         "acs:oss:*:*:ramtest-bucket/Development/*"
        ],
        "Condition": {}
      }
@@ -343,7 +379,7 @@ RAM Policy为JSON格式。各字段定义如下：
  }
 ```
 
-## 步骤3：授予RAM用户Leo特定权限
+## 步骤4：授予RAM用户Leo特定权限
 
 以下步骤演示了如何向RAM用户Leo授予访问Marketing/文件夹下所有文件的权限。
 
@@ -359,7 +395,7 @@ RAM Policy为JSON格式。各字段定义如下：
              "oss:ListObjects"
            ],
            "Resource": [
-             "acs:oss:*:*:example-company"
+             "acs:oss:*:*:ramtest-bucket"
            ],
            "Condition": {
              "StringEquals": {
@@ -375,7 +411,7 @@ RAM Policy为JSON格式。各字段定义如下：
              "oss:GetObject",         
            ],
            "Resource": [
-             "acs:oss:*:*:example-company/Marketing/*"
+             "acs:oss:*:*:ramtest-bucket/Marketing/*"
            ],
            "Condition": {}
          }
@@ -386,11 +422,11 @@ RAM Policy为JSON格式。各字段定义如下：
 2.  将`AllowGroupToSeeBucketListInConsole`策略授予RAM用户Leo。
 
 
-## 步骤4：拒绝RAM用户访问Private文件夹
+## 步骤5：拒绝RAM用户访问Private文件夹
 
 在本示例场景中，要求对Private/文件夹访问权限保留为私有，即主账号下的所有RAM用户均不能访问。因此，需要添加一个显式拒绝访问Private/文件夹的策略。显式拒绝策略优先于其他任何权限。具体实现方法如下：
 
--   添加以下语句，显式拒绝对Private/（example-company/Private/\*）的访问：
+-   添加以下语句，显式拒绝对Private/（ramtest-bucket/Private/\*）的访问：
 
     ```
     {
@@ -399,7 +435,7 @@ RAM Policy为JSON格式。各字段定义如下：
           "oss:*"
         ],
         "Resource": [
-          "acs:oss:*:*:example-company/Private/*"
+          "acs:oss:*:*:ramtest-bucket/Private/*"
         ],
         "Condition": {}
       }
@@ -455,7 +491,7 @@ RAM Policy为JSON格式。各字段定义如下：
          "oss:ListObjects"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company"
+         "acs:oss:*:*:ramtest-bucket"
        ],
        "Condition": {
          "StringEquals": {
@@ -474,7 +510,7 @@ RAM Policy为JSON格式。各字段定义如下：
          "oss:*"
        ],
        "Resource": [
-         "acs:oss:*:*:example-company/Private/*"
+         "acs:oss:*:*:ramtest-bucket/Private/*"
        ],
        "Condition": {}
      },
