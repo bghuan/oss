@@ -42,7 +42,7 @@ CRR supports the synchronization between buckets that have different names. If t
 
 -   Real-time data synchronization
 
-    This capability monitors data addition, deletion, and modification in real time and synchronizes these changes to the destination bucket. Data in an object up to 2 MB in size is synchronized within minutes to ensure data consistency between the source and the destination buckets.
+    This capability monitors data addition, deletion, and modification in real time and synchronizes these changes to the destination bucket. Data in an object up to 2 MB in size is synchronized within 10 minutes to ensure data consistency between the source and the destination buckets.
 
 -   Historical data migration
 
@@ -66,13 +66,17 @@ CRR supports the synchronization between buckets that have different names. If t
 
     **Note:** Mainland China refers to regions in China except China \(Hong Kong\).
 
+-   Replication of encrypted data
 
-## Limits
+    CRR can replicate objects that are not encrypted and objects that are encrypted by using SSE-KMS or SSE-OSS at the server side. For more information, see [Cross-region replication in specific scenarios](/intl.en-US/Developer Guide/Data security/Disaster recovery/Cross-region replication in specific scenarios.md).
+
+
+## Usage notes
 
 When you use CRR, take note of the following items:
 
 -   Supported regions
-    -   Tagging is supported when CRR is configured for bucket synchronizations only from Australia \(Sydney\) to regions outside mainland China.
+    -   The source region is China \(Hangzhou\). The destination region is any region except China \(Hangzhou\). Or the source region is Australia \(Sydney\), and the destination region is any region except mainland China regions or Australia \(Sydney\).
     -   You must enable transfer acceleration when you perform CRR between regions in mainland China and regions outside mainland China.
 -   Billing
     -   When CRR is enabled, CRR traffic is generated when you replicate objects between buckets in the source and destination regions. You are charged for the traffic when you use CRR. For more information, see [Traffic fees](/intl.en-US/Pricing/Billing items and methods/Traffic fees.md).
@@ -87,5 +91,5 @@ When you use CRR, take note of the following items:
     -   You can synchronize data only between two buckets that are in the same versioning state.
     -   You cannot change the versioning status of the source and destination buckets that are being synchronized.
     -   You can perform operations on buckets that are being synchronized at the same time. However, an object that is replicated from the source bucket may overwrite an object that has the same name in the destination bucket.
-    -   CRR can be applied only to two buckets that are not synchronized with any other buckets. For example, if you use CRR to synchronize data from Bucket A to Bucket B, you are not allowed to synchronize data from Bucket A to Bucket C, unless you delete the CRR configurations to synchronize data from Bucket A to Bucket B. Similarly, if you synchronize data from Bucket A to Bucket B, you are not allowed to synchronize data from Bucket C to Bucket B.
+    -   CRR can be applied only to two buckets that are not synchronized with other buckets. For example, if you use CRR to synchronize data from Bucket A to Bucket B, you are not allowed to synchronize data from Bucket A to Bucket C, unless you delete the CRR configurations to synchronize data from Bucket A to Bucket B. Similarly, if you synchronize data from Bucket A to Bucket B, you are not allowed to synchronize data from Bucket C to Bucket B.
 
