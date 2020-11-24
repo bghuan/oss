@@ -78,39 +78,26 @@ Figures are used in the following examples to describe how OSS processes data wh
 
     When you upload an object repeatedly to a versioned bucket, the object is overwritten multiple times. A version with a unique version ID is generated for the object each time when the object is overwritten.
 
-    ![1](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/4944169951/p143835.png)
+    ![1](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/4944169951/p143835.png)
 
 -   Delete an object from a versioned bucket
 
     When you delete an object from a versioned bucket, the previous versions of the object are not deleted and a delete marker is added to the object as the current version to indicate that the object is deleted. If you upload an object with the same name after the delete marker is added, a new version with a unique version ID is added as the current version.
 
-    ![2](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/4944169951/p143867.png)
+    ![2](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/4944169951/p143867.png)
 
 -   Overwrite an object in a bucket for which versioning is suspended
 
     When you upload an object to a bucket for which versioning is suspended, a new version whose version ID is null is added and the previous versions of the object are retained. If you upload the object with the same name again, a new version whose version ID is null overwrites the current version whose version ID is null.
 
-    ![3](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/5944169951/p143879.png)
+    ![3](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/5944169951/p143879.png)
 
 -   Delete an object from a bucket for which versioning is suspended
 
     When you delete an object from a bucket for which versioning is suspended, the previous versions of the object are not deleted and a delete marker is added to the object as the current version to indicate that the object is deleted.
 
-    ![4](https://static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com/assets/img/en-US/5944169951/p143882.png)
+    ![4](https://static-aliyun-doc.oss-accelerate.aliyuncs.com/assets/img/en-US/5944169951/p143882.png)
 
 
 As described in the preceding examples, deleted and overwritten data is stored as previous versions in a bucket whose versioning status is enabled or suspended. After you configure versioning for a bucket, you can recover objects in the bucket to any previous version to protect your data from being accidentally overwritten or deleted.
-
-## FAQ
-
-Why does the response speed decrease significantly when the GetBucket \(ListObjects\) operation is called to list current object versions in a versioned bucket?
-
-Cause: One or more objects in your bucket have a large number of previous versions or expired delete markers.
-
-Troubleshooting:
-
--   Call the GetBucketVersions \(ListObjectVersions\) operation to check whether the objects in your bucket have a large number of previous versions. For more information, see [GetBucketVersions\(ListObjectVersions\)](/intl.en-US/API Reference/Bucket operations/Versioning/GetBucketVersions(ListObjectVersions).md).
--   Use the bucket inventory function to view the information about the objects in your bucket and check whether the objects have previous versions or expired delete markers. For more information, see [Bucket inventory](/intl.en-US/Developer Guide/Buckets/Bucket inventory.md).
-
-Solution: Configure lifecycle rules for your bucket and specify the NonCurrentVersionExpiration and ExpiredObjectDeleteMarker operations in the rules to delete expired previous object versions and delete markers. For more information, see [Configuration elements](/intl.en-US/Developer Guide/Objects/Object lifecycle/Configuration elements.md).
 
